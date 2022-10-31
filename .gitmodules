@@ -2,3 +2,6 @@
 	path = library/ComputeLibrary
 	url = https://github.com/Piorosen/ComputeLibrary
 	branch = main
+[submodule "library/SimpleRKNN"]
+	path = library/SimpleRKNN
+	url = https://github.com/Piorosen/SimpleRKNN
