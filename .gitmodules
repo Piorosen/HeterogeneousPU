@@ -1,0 +1,4 @@
+[submodule "library/ComputeLibrary"]
+	path = library/ComputeLibrary
+	url = https://github.com/Piorosen/ComputeLibrary
+	branch = main
