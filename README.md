@@ -20,10 +20,12 @@
 
 ```sh
 # Simple!
+$ git clone --recursive https://github.com/Piorosen/ML-HeterogeneousPU
 $ ./bootstrap.sh
 $ make
 
 # or some detail
+$ git clone --recursive https://github.com/Piorosen/ML-HeterogeneousPU
 $ ./bootstrap.sh
 $ make rknn
 $ make openvino

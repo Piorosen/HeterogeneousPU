@@ -40,12 +40,13 @@ rknn:
 		cmake .. \
 		-DCMAKE_SYSTEM_NAME="Linux" \
 		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
-		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ && \
+		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ \
+		-DCMAKE_BUILD_TYPE=Release && \
 		make install 
 
 armcl: 
 	cd module/ArmCL && \
-		scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=0 cppthreads=1 openmp=0 arch=armv8a -j16
+		scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=1 cppthreads=1 openmp=0 arch=armv8a -j16
 
 	# if ! [ -d "module/ArmCL/build" ]; then \
 	#  	cd module/ArmCL && \

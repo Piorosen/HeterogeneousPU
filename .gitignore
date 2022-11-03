@@ -10,7 +10,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 .DS_Store
-build
-bin
-components
-link
+build/
+bin/
+components/
+link/
