@@ -1,11 +1,23 @@
 DIR := $(shell pwd)
 
-all: 
+all: configure build
 	echo "haha!"
 	
+build:
+	if ! [ -d "build" ]; then \
+		mkdir build; \
+	fi
+	cd build && cmake .. -G Ninja && ninja
 
-configure: rknn armcl
+configure: rknn armcl openvino
+	cp module/ArmCL/build/*.a link/
+	cp module/SimpleRKNN/bin/*.a link/
 	
+	cp module/ArmCL/build/*.so link/
+	cp module/SimpleRKNN/bin/*.so link/
+
+openvino:
+	echo "vino build..."
 
 rknn:
 	echo "work directory : $(DIR)"
@@ -35,3 +47,4 @@ clean:
 
 	rm -rf module/ArmCL/build
 	rm -rf module/libArmCL/build
+	rm -rf link/*.a link/*.so build
