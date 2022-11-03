@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "install : package dependency"
-sudo apt install -y cmake ninja-build make wget tar
+sudo apt install -y cmake ninja-build make wget tar scons
 
 mkdir components
 wget https://releases.linaro.org/components/toolchain/binaries/6.5-2018.12/aarch64-linux-gnu/gcc-linaro-6.5.0-2018.12-x86_64_aarch64-linux-gnu.tar.xz -P components && \
@@ -21,6 +21,9 @@ mkdir -p $HOME/intel/openvino_2022
 wget https://storage.openvinotoolkit.org/repositories/openvino/packages/2022.2/linux/$TOOL_KIT.tgz -P components && \
 tar -xvf components/$TOOL_KIT.tgz --strip 2 -C $HOME/intel/openvino_2022 && \
 tar -xvf components/$TOOL_KIT.tgz --strip 1 -C $HOME/intel/openvino_2022 $TOOL_KIT/setupvars.sh
+
+echo "source $HOME/intel/openvino_2022/setupvars.sh" >> ~/.bashrc
+echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./link"
 
 echo "done"
 

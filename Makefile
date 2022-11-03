@@ -15,14 +15,19 @@ build:
 	if ! [ -d "build" ]; then \
 		mkdir build; \
 	fi
-	cd build && cmake .. -G Ninja && ninja
+	cd build && cmake .. -G Ninja \
+		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
+		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ \
+		-DCMAKE_BUILD_TYPE=Release && \
+		ninja install
+		
 
 configure: rknn armcl openvino
 	cp module/ArmCL/build/*.a link/
 	cp module/SimpleRKNN/bin/*.a link/
-	
 	cp module/ArmCL/build/*.so link/
 	cp module/SimpleRKNN/bin/*.so link/
+
 
 openvino:
 	echo "vino build..."
