@@ -2,6 +2,7 @@ DIR := $(shell pwd)
 
 all: rknn armcl
 	echo "haha!"
+	
 rknn:
 	echo "work directory : $(DIR)"
 	if [ -d "library/SimpleRKNN/build" ]; then \
@@ -34,5 +35,8 @@ armcl: libarmcl
 		make
 	
 clean:
-	cd library/SimpleRKNN && rm -rf build
-	cd library/libArmCL/build
+	rm -rf library/SimpleRKNN/build
+	rm -rf library/SimpleRKNN/bin
+
+	rm -rf library/ArmCL/build
+	rm -rf library/libArmCL/build
