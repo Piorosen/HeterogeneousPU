@@ -1,42 +1,37 @@
 DIR := $(shell pwd)
 
-all: rknn armcl
+all: 
 	echo "haha!"
 	
+
+configure: rknn armcl
+	
+
 rknn:
 	echo "work directory : $(DIR)"
-	if [ -d "library/SimpleRKNN/build" ]; then \
-		rm -rf library/SimpleRKNN/build; \
+	if ! [ -d "module/SimpleRKNN/build" ]; then \
+		mkdir module/SimpleRKNN/build; \
 	fi
-	if [ -d "library/SimpleRKNN/bin" ]; then \
-  		rm -rf library/SimpleRKNN/bin; \
+	if ! [ -d "module/SimpleRKNN/bin" ]; then \
+  		mkdir module/SimpleRKNN/bin; \
 	fi
 
-	cd library/SimpleRKNN && \
-		mkdir build && \
-		cd build && \
+	cd module/SimpleRKNN/build && \
 		cmake .. && \
 		make install 
 
-libarmcl: 
-	if [ -d "library/libArmCL/build" ]; then  echo "done"; else cd library/libArmCL && scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=0 cppthreads=1 openmp=0 arch=armv8a -j8; fi 
+armcl: 
+	cd module/ArmCL && \
+		scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=0 cppthreads=1 openmp=0 arch=armv8a -j16
 
-armcl: libarmcl
-	cp library/libArmCL/build/*.a library/ArmCL/external
-	cp library/libArmCL/build/*.so library/ArmCL/external
-	
-	if [ -d "library/ArmCL/build" ]; then \
-  		rm -rf library/ArmCL/build; \
-	fi
-	cd library/ArmCL && \
-		mkdir build && \
-		cd build && \
-		cmake .. && \
-		make
-	
+	# if ! [ -d "module/ArmCL/build" ]; then \
+	#  	cd module/ArmCL && \
+	# 	scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=0 cppthreads=1 openmp=0 arch=armv8a -j8; \
+	# fi
+
 clean:
-	rm -rf library/SimpleRKNN/build
-	rm -rf library/SimpleRKNN/bin
+	rm -rf module/SimpleRKNN/build
+	rm -rf module/SimpleRKNN/bin
 
-	rm -rf library/ArmCL/build
-	rm -rf library/libArmCL/build
+	rm -rf module/ArmCL/build
+	rm -rf module/libArmCL/build
