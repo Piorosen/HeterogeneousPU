@@ -1,9 +1,6 @@
-[submodule "library/SimpleRKNN"]
-	path = library/SimpleRKNN
-	url = https://github.com/Piorosen/SimpleRKNN
-[submodule "library/ArmCL"]
-	path = library/ArmCL
-	url = https://github.com/Piorosen/ComputeLibrary-Executer
-[submodule "library/libArmCL"]
-	path = library/libArmCL
+[submodule "module/ArmCL"]
+	path = module/ArmCL
 	url = https://github.com/Piorosen/ComputeLibrary
+[submodule "module/SimpleRKNN"]
+	path = module/SimpleRKNN
+	url = https://github.com/Piorosen/SimpleRKNN
