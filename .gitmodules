@@ -4,3 +4,6 @@
 [submodule "library/ArmCL"]
 	path = library/ArmCL
 	url = https://github.com/Piorosen/ComputeLibrary-Executer
+[submodule "library/libArmCL"]
+	path = library/libArmCL
+	url = https://github.com/Piorosen/ComputeLibrary
