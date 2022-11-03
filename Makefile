@@ -1,4 +1,12 @@
 DIR := $(shell pwd)
+GCC_COMPILER := $(DIR)/components/gcc-linaro-6.5.0-2018.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
+CC := ${GCC_COMPILER}-gcc
+CXX := ${GCC_COMPILER}-g++
+
+test: 
+	echo $(GCC_COMPILER)
+	echo $(CC)
+	echo $(CXX)
 
 all: configure build
 	echo "haha!"
@@ -29,7 +37,10 @@ rknn:
 	fi
 
 	cd module/SimpleRKNN/build && \
-		cmake .. && \
+		cmake .. \
+		-DCMAKE_SYSTEM_NAME="Linux" \
+		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
+		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ && \
 		make install 
 
 armcl: 

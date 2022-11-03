@@ -28,8 +28,6 @@ include_directories(${CMAKE_SOURCE_DIR}/library/)
 
 set(CMAKE_INSTALL_RPATH "lib")
 
-add_subdirectory(library/SimpleRKNN)
-
 add_executable(${PROJ_NAME}
         main.cc
 )

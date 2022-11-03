@@ -20,9 +20,11 @@
 
 ```sh
 # Simple!
+$ ./bootstrap.sh
 $ make
 
 # or some detail
+$ ./bootstrap.sh
 $ make rknn
 $ make openvino
 $ make armcl
