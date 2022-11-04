@@ -3,9 +3,12 @@
 echo "install : package dependency"
 sudo apt install -y cmake ninja-build make wget tar scons
 
-mkdir components
-wget https://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/aarch64-linux-gnu/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz -P components && \
-    tar -xvf components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz -C components
+ARCH=$(uname -m)
+if [ $ARCH == "x86_64" ]; then
+    mkdir components
+    wget https://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/aarch64-linux-gnu/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz -P components && \
+        tar -xvf components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz -C components
+fi
 
 echo "done"
 

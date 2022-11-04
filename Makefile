@@ -1,7 +1,15 @@
 DIR := $(shell pwd)
+ARCH=$(uname -m)
+
+ifeq ($(ARCH), x86_64)
 GCC_COMPILER := $(DIR)/components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
+else
+GCC_COMPILER := /user/bin/aarch64-linux-gnu
+endif
+
 CC := ${GCC_COMPILER}-gcc
 CXX := ${GCC_COMPILER}-g++
+
 
 test: 
 	echo $(GCC_COMPILER)

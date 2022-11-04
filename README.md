@@ -1,4 +1,4 @@
-# ML-HeterogeneousPU
+# HeterogeneousPU
 
 # Prerequirements
 
@@ -20,12 +20,12 @@
 
 ```sh
 # Simple!
-$ git clone --recursive https://github.com/Piorosen/ML-HeterogeneousPU
+$ git clone --recursive https://github.com/Piorosen/HeterogeneousPU
 $ ./bootstrap.sh
 $ make
 
 # or some detail
-$ git clone --recursive https://github.com/Piorosen/ML-HeterogeneousPU
+$ git clone --recursive https://github.com/Piorosen/HeterogeneousPU
 $ ./bootstrap.sh
 $ make rknn
 $ make openvino
