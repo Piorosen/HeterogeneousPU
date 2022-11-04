@@ -4,7 +4,7 @@ ARCH=$(uname -m)
 ifeq ($(ARCH), x86_64)
 GCC_COMPILER := $(DIR)/components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
 else
-GCC_COMPILER := /user/bin/aarch64-linux-gnu
+GCC_COMPILER := /usr/bin/aarch64-linux-gnu
 endif
 
 CC := ${GCC_COMPILER}-gcc
@@ -39,7 +39,9 @@ configure: rknn armcl openvino
 
 
 openvino:
-	./scripts/install_open_vino.sh
+	
+	# chmod +x ./scripts/install_open_vino.sh
+	# ./scripts/install_open_vino.sh
 
 rknn:
 	echo "work directory : $(DIR)"

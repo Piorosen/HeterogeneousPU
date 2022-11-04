@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "git submodule update --init --recursive"
+git submodule update --init --recursive
+
 echo "install : package dependency"
 sudo apt install -y cmake ninja-build make wget tar scons
 

@@ -12,9 +12,14 @@ fi
 
 mkdir -p $HOME/intel/openvino_2022
 wget https://storage.openvinotoolkit.org/repositories/openvino/packages/2022.2/linux/$TOOL_KIT.tgz -P components && \
-tar -xvf components/$TOOL_KIT.tgz --strip 2 -C $HOME/intel/openvino_2022 && \
-tar -xvf components/$TOOL_KIT.tgz --strip 1 -C $HOME/intel/openvino_2022 $TOOL_KIT/setupvars.sh
+tar -xvf components/$TOOL_KIT.tgz --strip 1 -C $HOME/intel/openvino_2022 
 
 echo "source $HOME/intel/openvino_2022/setupvars.sh" >> ~/.bashrc
 echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./link"
-echo "done"
+source ~/.bashrc
+
+$HOME/intel/openvino_2022/install_dependencies/install_NCS_udev_rules.sh
+echo "installed OpenVINO Neural Compute Stick 2 Driver"
+
+echo "installed OpenVINO ToolKit : $HOME/intel/openvino_2022"
+
