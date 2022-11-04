@@ -31,7 +31,7 @@ configure: rknn armcl openvino
 
 
 openvino:
-	echo "vino build..."
+	./scripts/install_open_vino.sh
 
 rknn:
 	echo "work directory : $(DIR)"
@@ -66,3 +66,4 @@ clean:
 	rm -rf module/ArmCL/build
 	rm -rf module/libArmCL/build
 	rm -rf link/*.a link/*.so build bin
+	rm -rf $(shell $HOME)/intel/openvino_2022
