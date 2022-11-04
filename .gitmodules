@@ -4,3 +4,6 @@
 [submodule "module/SimpleRKNN"]
 	path = module/SimpleRKNN
 	url = https://github.com/Piorosen/SimpleRKNN
+[submodule "module/OpenVINO"]
+	path = module/OpenVINO
+	url = https://github.com/openvinotoolkit/openvino
