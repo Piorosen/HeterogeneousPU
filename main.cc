@@ -10,6 +10,8 @@
 #include <stb/stb_image.h>
 
 #include <spdlog/spdlog.h>
+#include <SimpleRKNN/simple_rknn.h>
+#include <ArmCL/arm_compute/runtime/Scheduler.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -17,4 +19,5 @@ using namespace std::chrono;
 int main(int argc, char **argv)
 {
     spdlog::info("run!!");
+    cout << arm_compute::Scheduler::get().cpu_info().get_cpu_num() << "\n";
 }

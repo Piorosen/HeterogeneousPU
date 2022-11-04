@@ -1,5 +1,5 @@
 DIR := $(shell pwd)
-GCC_COMPILER := $(DIR)/components/gcc-linaro-6.5.0-2018.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
+GCC_COMPILER := $(DIR)/components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
 CC := ${GCC_COMPILER}-gcc
 CXX := ${GCC_COMPILER}-g++
 
@@ -18,8 +18,9 @@ build:
 	cd build && cmake .. -G Ninja \
 		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
 		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ \
-		-DCMAKE_BUILD_TYPE=Release && \
-		ninja install
+		-DCMAKE_BUILD_TYPE=Release
+		
+	cd build && ninja install
 		
 
 configure: rknn armcl openvino
@@ -64,4 +65,4 @@ clean:
 
 	rm -rf module/ArmCL/build
 	rm -rf module/libArmCL/build
-	rm -rf link/*.a link/*.so build
+	rm -rf link/*.a link/*.so build bin
