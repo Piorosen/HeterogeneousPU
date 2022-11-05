@@ -1,7 +1,7 @@
 DIR := $(shell pwd)
-ARCH=$(uname -m)
+ARCH=$(shell uname -m)
 
-ifeq ($(ARCH), x86_64)
+ifeq ($(ARCH),x86_64)
 GCC_COMPILER := $(DIR)/components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
 else
 GCC_COMPILER := /usr/bin/aarch64-linux-gnu
@@ -37,9 +37,51 @@ configure: rknn armcl openvino
 	cp module/ArmCL/build/*.so link/
 	cp module/SimpleRKNN/bin/*.so link/
 
+opencv:
+	if ! [ -d "module/OpenCV/build" ]; then \
+		mkdir module/OpenCV/build; \
+	fi
+	if ! [ -d "link/OpenCV" ]; then \
+		mkdir link/OpenCV; \
+	fi
+
+	cd module/OpenCV/build && \
+	cmake .. \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
+	-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++  \
+	-DCMAKE_CXX_FLAGS="-march=armv8-a" \
+	-DCMAKE_INSTALL_PREFIX=${DIR}/link/OpenCV \
+	-DCMAKE_TOOLCHAIN_FILE=${DIR}/module/OpenCV/platforms/linux/aarch64-gnu.toolchain.cmake && \
+	make -j$(shell nproc --all) && \
+	make install
+
+	echo "export OpenCV_DIR=${DIR}/link/opencv" >> ~/.bashrc
+	source ~/.bashrc
 
 openvino:
 	
+	if ! [ -d "module/OpenVINO/build" ]; then \
+		mkdir module/OpenVINO/build; \
+	fi
+
+	cd module/OpenVINO/build && \
+	cmake .. \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
+		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++  \
+		-DCMAKE_CXX_FLAGS="-march=armv8-a" \
+		-DTHREADS_PTHREAD_ARG="-pthread" \
+		-DCMAKE_TOOLCHAIN_FILE="../cmake/arm64.toolchain.cmake" \
+		-DCMAKE_INSTALL_PREFIX=${DIR}/link/OpenVINO \
+		-DENABLE_MKL_DNN=OFF \
+		-DENABLE_CLDNN=OFF \
+		-DENABLE_GNA=OFF \
+		-DENABLE_SSE42=OFF \
+		-DENABLE_AVX512F=OFF \
+		-DTHREADING=SEQ && \
+	make -j$(shell nproc --all)
+
 	# chmod +x ./scripts/install_open_vino.sh
 	# ./scripts/install_open_vino.sh
 
@@ -64,12 +106,11 @@ armcl:
 	cd module/ArmCL && \
 		scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=1 cppthreads=1 openmp=0 arch=armv8a -j16
 
-	# if ! [ -d "module/ArmCL/build" ]; then \
-	#  	cd module/ArmCL && \
-	# 	scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=0 cppthreads=1 openmp=0 arch=armv8a -j8; \
-	# fi
 
 clean:
+	rm -rf module/OpenCV/build
+	rm -rf link/OpenCV
+	
 	rm -rf module/SimpleRKNN/build
 	rm -rf module/SimpleRKNN/bin
 
