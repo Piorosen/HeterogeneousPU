@@ -18,6 +18,7 @@ link_directories(${LINK_LIB})
 
 # library headers
 include_directories(${CMAKE_SOURCE_DIR}/library/)
+include_directories(${CMAKE_SOURCE_DIR}/lib/inc)
 include_directories(${CMAKE_SOURCE_DIR}/library/ArmCL)
 
 set(CMAKE_INSTALL_RPATH "lib")

@@ -2,14 +2,17 @@ DIR := $(shell pwd)
 ARCH=$(shell uname -m)
 
 ifeq ($(ARCH),x86_64)
+PATH_COMPILER := $(DIR)/components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin
 GCC_COMPILER := $(DIR)/components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
 else
+PATH_COMPILER := /usr/bin
 GCC_COMPILER := /usr/bin/aarch64-linux-gnu
 endif
 
 CC := ${GCC_COMPILER}-gcc
 CXX := ${GCC_COMPILER}-g++
 
+.PHONY: all build test configure opencv openvino rknn armcl clean
 
 test: 
 	echo $(GCC_COMPILER)
@@ -23,6 +26,7 @@ build:
 	if ! [ -d "build" ]; then \
 		mkdir build; \
 	fi
+	
 	cd build && cmake .. -G Ninja \
 		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
 		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ \
@@ -61,26 +65,26 @@ opencv:
 
 openvino:
 	
-	if ! [ -d "module/OpenVINO/build" ]; then \
-		mkdir module/OpenVINO/build; \
-	fi
+	# if ! [ -d "module/OpenVINO/build" ]; then \
+	# 	mkdir module/OpenVINO/build; \
+	# fi
 
-	cd module/OpenVINO/build && \
-	cmake .. \
-		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
-		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++  \
-		-DCMAKE_CXX_FLAGS="-march=armv8-a" \
-		-DTHREADS_PTHREAD_ARG="-pthread" \
-		-DCMAKE_TOOLCHAIN_FILE="../cmake/arm64.toolchain.cmake" \
-		-DCMAKE_INSTALL_PREFIX=${DIR}/link/OpenVINO \
-		-DENABLE_MKL_DNN=OFF \
-		-DENABLE_CLDNN=OFF \
-		-DENABLE_GNA=OFF \
-		-DENABLE_SSE42=OFF \
-		-DENABLE_AVX512F=OFF \
-		-DTHREADING=SEQ && \
-	make -j$(shell nproc --all)
+	# cd module/OpenVINO/build && \
+	# cmake .. \
+	# 	-DCMAKE_BUILD_TYPE=Release \
+	# 	-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
+	# 	-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++  \
+	# 	-DCMAKE_CXX_FLAGS="-march=armv8-a" \
+	# 	-DTHREADS_PTHREAD_ARG="-pthread" \
+	# 	-DCMAKE_TOOLCHAIN_FILE="../cmake/arm64.toolchain.cmake" \
+	# 	-DCMAKE_INSTALL_PREFIX=${DIR}/link/OpenVINO \
+	# 	-DENABLE_MKL_DNN=OFF \
+	# 	-DENABLE_CLDNN=OFF \
+	# 	-DENABLE_GNA=OFF \
+	# 	-DENABLE_SSE42=OFF \
+	# 	-DENABLE_AVX512F=OFF \
+	# 	-DTHREADING=SEQ && \
+	# make -j$(shell nproc --all)
 
 	# chmod +x ./scripts/install_open_vino.sh
 	# ./scripts/install_open_vino.sh
@@ -103,6 +107,7 @@ rknn:
 		make install 
 
 armcl: 
+	
 	cd module/ArmCL && \
 		scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=1 cppthreads=1 openmp=0 arch=armv8a -j16
 
