@@ -4,7 +4,7 @@ echo "git submodule update --init --recursive"
 git submodule update --init --recursive
 
 echo "install : package dependency"
-sudo apt install -y cmake ninja-build make wget tar scons
+sudo apt install -y ninja-build make wget tar scons cython3
 
 ARCH=$(uname -m)
 if [ $ARCH == "x86_64" ]; then
@@ -13,6 +13,29 @@ if [ $ARCH == "x86_64" ]; then
         tar -xvf components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz -C components
     echo "export PATH=$PATH:$(pwd)/components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin" >> ~/.bashrc
 	source ~/.bashrc
+fi
+
+if [ $ARCH == "aarch64" ]; then
+    sudo -E apt update
+    sudo -E apt-get install -y \
+            build-essential \
+            wget \
+            libssl-dev \
+            ca-certificates \
+            git \
+            pkg-config \
+            libgflags-dev \
+            zlib1g-dev \
+            nlohmann-json-dev \
+            unzip \
+            libusb-1.0-0-dev
+
+    wget https://github.com/Kitware/CMake/releases/download/v3.24.1/cmake-3.24.1-linux-aarch64.tar.gz -P components && \
+        sudo tar -zxvf components/cmake-3.24.1-linux-aarch64.tar.gz --strip 1 -C /usr && \
+        rm -rf components/cmake-3.24.1-linux-aarch64.tar.gz
+    
+    pip3 install --upgrade pip3
+    pip install setuptools openvino-dev
 fi
 
 echo "done"

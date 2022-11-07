@@ -9,6 +9,10 @@ PATH_COMPILER := /usr/bin
 GCC_COMPILER := /usr/bin/aarch64-linux-gnu
 endif
 
+CYTHON_EXECUTABLE := /usr/bin/cython3
+PYTHON_EXECUTABLE := /usr/bin/python3.7
+PYTHON_LIBRARY := /usr/lib/aarch64-linux-gnu/libpython3.7m.so
+PYTHON_INCLUDE_DIR := /usr/include/python3.7
 CC := ${GCC_COMPILER}-gcc
 CXX := ${GCC_COMPILER}-g++
 
@@ -18,6 +22,7 @@ test:
 	echo $(GCC_COMPILER)
 	echo $(CC)
 	echo $(CXX)
+	echo $(shell $$HOME)
 
 all: configure build
 	echo "haha!"
@@ -64,30 +69,33 @@ opencv:
 	source ~/.bashrc
 
 openvino:
-	
-	# if ! [ -d "module/OpenVINO/build" ]; then \
-	# 	mkdir module/OpenVINO/build; \
-	# fi
+	if ! [ -d "module/OpenVINO/build" ]; then \
+		mkdir module/OpenVINO/build; \
+	fi
 
-	# cd module/OpenVINO/build && \
-	# cmake .. \
-	# 	-DCMAKE_BUILD_TYPE=Release \
-	# 	-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
-	# 	-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++  \
-	# 	-DCMAKE_CXX_FLAGS="-march=armv8-a" \
-	# 	-DTHREADS_PTHREAD_ARG="-pthread" \
-	# 	-DCMAKE_TOOLCHAIN_FILE="../cmake/arm64.toolchain.cmake" \
-	# 	-DCMAKE_INSTALL_PREFIX=${DIR}/link/OpenVINO \
-	# 	-DENABLE_MKL_DNN=OFF \
-	# 	-DENABLE_CLDNN=OFF \
-	# 	-DENABLE_GNA=OFF \
-	# 	-DENABLE_SSE42=OFF \
-	# 	-DENABLE_AVX512F=OFF \
-	# 	-DTHREADING=SEQ && \
-	# make -j$(shell nproc --all)
-
-	# chmod +x ./scripts/install_open_vino.sh
-	# ./scripts/install_open_vino.sh
+	cd module/OpenVINO/build && \
+	cmake .. \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
+		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++  \
+		-DCMAKE_CXX_FLAGS="-march=armv8-a" \
+		-DTHREADS_PTHREAD_ARG="-pthread" \
+		-DCMAKE_TOOLCHAIN_FILE="../cmake/arm64.toolchain.cmake" \
+		-DCMAKE_INSTALL_PREFIX=${DIR}/link/OpenVINO \
+		-DENABLE_MKL_DNN=OFF \
+		-DENABLE_CLDNN=OFF \
+		-DENABLE_GNA=OFF \
+		-DENABLE_SSE42=OFF \
+		-DENABLE_AVX512F=OFF \
+		-DTHREADING=SEQ \
+		-DNGRAPH_PYTHON_BUILD_ENABLE=ON \
+		-DNGRAPH_ONNX_IMPORT_ENABLE=ON \
+		-DENABLE_PYTHON=ON \
+		-DPYTHON_EXECUTABLE=${PYTHON_EXECUTABLE} \
+		-DPYTHON_LIBRARY=${PYTHON_LIBRARY} \
+		-DCYTHON_EXECUTABLE=${CYTHON_EXECUTABLE} \
+		-DPYTHON_INCLUDE_DIR=${PYTHON_INCLUDE_DIR} && \
+	make -j$(shell nproc --all)
 
 rknn:
 	echo "work directory : $(DIR)"
@@ -122,4 +130,4 @@ clean:
 	rm -rf module/ArmCL/build
 	rm -rf module/libArmCL/build
 	rm -rf link/*.a link/*.so build bin
-	rm -rf $(shell $HOME)/intel/openvino_2022
+	rm -rf $(shell $$HOME)/intel/openvino_2022
