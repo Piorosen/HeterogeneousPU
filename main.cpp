@@ -16,11 +16,13 @@
 #include <ArmCL/arm_compute/runtime/Scheduler.h>
 #include <openvino/openvino.hpp>
 
+
 using namespace std;
 using namespace std::chrono;
 
 int main(int argc, char **argv)
 {
+    ov::get
     ov::get_openvino_version();
     ov::Core core;
     vector<string> availableDevices = core.get_available_devices();
