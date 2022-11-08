@@ -40,15 +40,14 @@ build:
 	cd build && ninja install
 		
 
-configure: rknn armcl openvino
+configure: rknn armcl
 	cp module/ArmCL/build/*.a link/
 	cp module/SimpleRKNN/bin/*.a link/
 	cp module/ArmCL/build/*.so link/
 	cp module/SimpleRKNN/bin/*.so link/
-	cd module/OpenVINO/build && make install
+	# cd module/OpenVINO/build && make install
 	
-	echo "source ${DIR}/components/OpenVINO/setupvars.sh" >> ~/.bashrc
-	echo "export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:./link" >> ~/.bashrc
+	
 
 opencv:
 	if ! [ -d "module/OpenCV/build" ]; then \
@@ -100,6 +99,9 @@ openvino:
 		-DCYTHON_EXECUTABLE=${CYTHON_EXECUTABLE} \
 		-DPYTHON_INCLUDE_DIR=${PYTHON_INCLUDE_DIR} && \
 	make -j$(shell nproc --all)
+	echo "plz, insert ~/.bashrc under text"
+	echo "source ${DIR}/components/OpenVINO/setupvars.sh" 
+	echo "export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:./link" 
 
 rknn:
 	echo "work directory : $(DIR)"

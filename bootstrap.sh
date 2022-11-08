@@ -13,6 +13,10 @@ if [ $ARCH == "x86_64" ]; then
         mkdir components
         wget https://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/aarch64-linux-gnu/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz -P components && \
             tar -xvf components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz -C components
+
+        wget https://github.com/Piorosen/HeterogeneousPU/releases/download/OpenVINO-2022-03/OpenVINO.tar.gz -P components && \
+        tar -zxvf components/OpenVINO.tar.gz -C components
+
         echo "export PATH=$PATH:$(pwd)/components/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin" >> ~/.bashrc
         source ~/.bashrc
     fi
@@ -42,8 +46,13 @@ if [ $ARCH == "aarch64" ]; then
         sudo tar -zxvf components/cmake-3.24.1-linux-aarch64.tar.gz --strip 1 -C /usr && \
         rm -rf components/cmake-3.24.1-linux-aarch64.tar.gz
     
-    pip3 install --upgrade pip3
-    pip install setuptools openvino-dev
+    # pip3 install --upgrade pip3
+    # pip install setuptools openvino-dev
+
+    wget https://github.com/Piorosen/HeterogeneousPU/releases/download/OpenVINO-2022-03/OpenVINO.tar.gz -P components && \
+    tar -zxvf components/OpenVINO.tar.gz -C components
+    echo "source ${DIR}/components/OpenVINO/setupvars.sh" >> ~/.bashrc
+	echo "export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:./link" >> ~/.bashrc
 fi
 
 echo "done"

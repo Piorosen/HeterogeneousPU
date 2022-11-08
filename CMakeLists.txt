@@ -8,9 +8,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 # https://docs.openvino.ai/latest/openvino_docs_OV_UG_Integrate_OV_with_your_application.html#doxid-openvino-docs-o-v-u-g-integrate-o-v-with-your-application
 
 # message(${OpenVINO_SOURCE_DIR})
-find_package(OpenVINO REQUIRED)
-find_package(InferenceEngine REQUIRED)
-find_package(ngraph REQUIRED)
+EXECUTE_PROCESS (COMMAND uname -m
+	OUTPUT_VARIABLE DEFINE_OS)
+
+if (DEFINE_OS STREQUAL "aarch64")
+	find_package(OpenVINO REQUIRED)
+	find_package(InferenceEngine REQUIRED)
+	find_package(ngraph REQUIRED)
+endif()
+
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	message(STATUS "64bit")
@@ -27,6 +33,7 @@ link_directories(${LINK_LIB})
 include_directories(${CMAKE_SOURCE_DIR}/library/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/inc)
 include_directories(${CMAKE_SOURCE_DIR}/library/ArmCL)
+include_directories(${CMAKE_SOURCE_DIR}/runtime/include)
 
 set(CMAKE_INSTALL_RPATH "lib")
 
@@ -35,8 +42,9 @@ add_executable(${PROJ_NAME}
 )
 
 # OpenVINO
-target_link_libraries(${PROJ_NAME} openvino::runtime)
-
+if (DEFINE_OS STREQUAL "aarch64")
+	target_link_libraries(${PROJ_NAME} openvino::runtime)
+endif()
 # ArmCL
 target_link_libraries(${PROJ_NAME} 
         arm_compute_core
