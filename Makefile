@@ -95,7 +95,8 @@ openvino:
 		-DPYTHON_LIBRARY=${PYTHON_LIBRARY} \
 		-DCYTHON_EXECUTABLE=${CYTHON_EXECUTABLE} \
 		-DPYTHON_INCLUDE_DIR=${PYTHON_INCLUDE_DIR} && \
-	make -j$(shell nproc --all)
+	make -j$(shell nproc --all) && \
+	make install
 
 rknn:
 	echo "work directory : $(DIR)"
