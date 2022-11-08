@@ -46,6 +46,9 @@ configure: rknn armcl openvino
 	cp module/ArmCL/build/*.so link/
 	cp module/SimpleRKNN/bin/*.so link/
 	cd module/OpenVINO/build && make install
+	
+	echo "source ${DIR}/components/OpenVINO/setupvars.sh" >> ~/.bashrc
+	echo "export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:./link" >> ~/.bashrc
 
 opencv:
 	if ! [ -d "module/OpenCV/build" ]; then \

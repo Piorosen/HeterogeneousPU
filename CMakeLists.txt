@@ -5,6 +5,8 @@ project(${PROJ_NAME})
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
+# https://docs.openvino.ai/latest/openvino_docs_OV_UG_Integrate_OV_with_your_application.html#doxid-openvino-docs-o-v-u-g-integrate-o-v-with-your-application
+
 # message(${OpenVINO_SOURCE_DIR})
 find_package(OpenVINO REQUIRED)
 find_package(InferenceEngine REQUIRED)
