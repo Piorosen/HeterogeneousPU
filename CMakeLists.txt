@@ -5,6 +5,11 @@ project(${PROJ_NAME})
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
+# message(${OpenVINO_SOURCE_DIR})
+find_package(OpenVINO REQUIRED)
+find_package(InferenceEngine REQUIRED)
+find_package(ngraph REQUIRED)
+
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	message(STATUS "64bit")
 	set(LIB_ARCH lib64)
@@ -26,6 +31,9 @@ set(CMAKE_INSTALL_RPATH "lib")
 add_executable(${PROJ_NAME}
         main.cc
 )
+
+# OpenVINO
+target_link_libraries(${PROJ_NAME} openvino::runtime)
 
 # ArmCL
 target_link_libraries(${PROJ_NAME} 

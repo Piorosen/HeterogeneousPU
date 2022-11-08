@@ -13,6 +13,7 @@
 #include <SimpleRKNN/simple_rknn.h>
 #include <ArmCL/arm_compute/runtime/Scheduler.h>
 
+
 using namespace std;
 using namespace std::chrono;
 
