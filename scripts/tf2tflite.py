@@ -11,15 +11,6 @@ if __name__ == '__main__':
     parser.add_argument('-o', dest='outputFile', type=str, required=True, help='TFLite 출력할 파일 명')
     args = parser.parse_args()
     
-    # model = tf.keras.applications.resnet50.ResNet50(
-    #     include_top=True,
-    #     weights='imagenet',
-    #     input_tensor=None,
-    #     input_shape=None,
-    #     pooling=None,
-    #     classes=1000,
-    # )
-    
     model = tf.keras.models.load_model(args.modelFile)
     model.summary()
     

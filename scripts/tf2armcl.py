@@ -23,8 +23,8 @@ if __name__ == '__main__':
     # )
 
     for key in model.get_weight_paths().keys():
-        data = model.get_weight_paths()[key].shape
-        # print(data)
+        data = model.get_weight_paths()[key]
+        print(data)
         np.save("./" + args.outputDir + "/" + key + ".npy", np.array(data))
     
 # b = h5py.File("./vgg16.h5")
