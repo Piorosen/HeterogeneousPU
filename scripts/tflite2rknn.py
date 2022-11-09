@@ -1,3 +1,9 @@
+# brew install python@3.7
+# below download whl
+# https://github.com/rockchip-linux/rknn-toolkit
+# Requires validation list (dataset.txt) and image RKNN when converting
+
+
 import numpy as np
 import argparse
 from rknn.api import RKNN
