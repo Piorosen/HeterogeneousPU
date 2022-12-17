@@ -8,10 +8,7 @@
 #include <string>
 #include <memory>
 #include <chrono>
-
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
-
 #include <openvino/openvino.hpp>
 #include "classification_results.h"
 
@@ -51,11 +48,11 @@ void show(const ov::Model* network){
 }
 
 
-void run_vino() { 
+std::vector<double> run_vino() { 
 
     auto version = ov::get_openvino_version();
     cout << version.buildNumber << " :-: " << version.description << "\n";
-    
+    std::vector<double> measure_bench;
     ov::Core core;
     vector<string> availableDevices = core.get_available_devices();
     cout << "Available Devices : \n";
@@ -66,10 +63,10 @@ void run_vino() {
     // OPENVINO_ASSERT(model->inputs().size() == 1, "Sample supports models with 1 input only");
     // OPENVINO_ASSERT(model->outputs().size() == 1, "Sample supports models with 1 output only");
 
-    std::shared_ptr<ov::Model> model = core.read_model("alexnet.xml");
-    show(model.get());
+    std::shared_ptr<ov::Model> model = core.read_model("./openvino/resnet101.xml");
+    // show(model.get());
     int width, height, c;
-    unsigned char* data = stbi_load("00.png", &width, &height, &c, 0);
+    unsigned char* data = stbi_load("dog_224x224.jpg", &width, &height, &c, 0);
     ov::element::Type input_type = ov::element::u8;
     ov::Shape input_shape = {1, (unsigned long)height, (unsigned long)width, (unsigned long)c};
 
@@ -109,23 +106,26 @@ void run_vino() {
 
     // -------- Step 8. Do inference synchronously --------
     cout << ":: OpenVINO TEST :: " << "\n";
-
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 30; i++) {
         auto now = high_resolution_clock::now();
         infer_request.infer();
         cout << (high_resolution_clock::now() - now).count() / 1000 / 1000 << "ms\n";
+        measure_bench.push_back((high_resolution_clock::now() - now).count() / 1000 / 1000);
     }
+    
     
     // -------- Step 9. Process output
     const ov::Tensor& output_tensor = infer_request.get_output_tensor();
 
     // Print classification results
-    ClassificationResult classification_result(output_tensor, {"00.png"});
+    ClassificationResult classification_result(output_tensor, {"dog_224x224.jpg"});
     classification_result.show();
 
     // spdlog::info("run!!");   
     // cout << arm_compute::Scheduler::get().cpu_info().get_cpu_num() << "\n";
     stbi_image_free(data);
+    
+    return measure_bench;
 }
 
 #endif // MAIN_COMPOSE_OPENVINO_H

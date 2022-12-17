@@ -36,12 +36,15 @@ message(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/library/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/inc)
 include_directories(${CMAKE_SOURCE_DIR}/library/ArmCL)
-include_directories(${CMAKE_SOURCE_DIR}/components/OpenVINO/runtime/include)
+# include_directories(${CMAKE_SOURCE_DIR}/components/OpenVINO/runtime/include)
 
 set(CMAKE_INSTALL_RPATH "lib")
 
 add_executable(${PROJ_NAME}
         main.cpp
+        library/ArmCL/utils/GraphUtils.cpp 
+        library/ArmCL/utils/Utils.cpp
+		lib/src/stb_image.cpp
 )
 
 

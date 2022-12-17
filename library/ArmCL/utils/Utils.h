@@ -67,48 +67,6 @@ enum class ImageType
     JPEG
 };
 
-/** Abstract Example class.
- *
- * All examples have to inherit from this class.
- */
-class Example
-{
-public:
-    /** Setup the example.
-     *
-     * @param[in] argc Argument count.
-     * @param[in] argv Argument values.
-     *
-     * @return True in case of no errors in setup else false
-     */
-    virtual bool do_setup(int argc, char **argv)
-    {
-        ARM_COMPUTE_UNUSED(argc, argv);
-        return true;
-    };
-    /** Run the example. */
-    virtual void do_run(int mode) {};
-    /** Teardown the example. */
-    virtual void do_teardown() {};
-
-    /** Default destructor. */
-    virtual ~Example() = default;
-};
-
-/** Run an example and handle the potential exceptions it throws
- *
- * @param[in] argc    Number of command line arguments
- * @param[in] argv    Command line arguments
- * @param[in] example Example to run
- */
-int run_example(int argc, char **argv, std::unique_ptr<Example> example);
-
-template <typename T>
-int run_example(int argc, char **argv)
-{
-    return run_example(argc, argv, std::make_unique<T>());
-}
-
 /** Draw a RGB rectangular window for the detected object
  *
  * @param[in, out] tensor Input tensor where the rectangle will be drawn on. Format supported: RGB888

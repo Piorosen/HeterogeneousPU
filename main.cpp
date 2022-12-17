@@ -3,6 +3,8 @@
 #include <compose/NEON.h>
 #include <compose/RKNN.h>
 
+
+
 // #include <spdlog/spdlog.h>
 // #include <SimpleRKNN/simple_rknn.h>
 // #include <ArmCL/arm_compute/runtime/Scheduler.h>
@@ -10,7 +12,8 @@
 
 int main(int argc, char **argv)
 {
-    run_vino();
+    // auto vino = run_vino();
+    auto rkn = run_rknn();
 
 
     return 0;
