@@ -283,6 +283,7 @@ TopNPredictionsAccessor::TopNPredictionsAccessor(const std::string &labels_path,
 template <typename T>
 void TopNPredictionsAccessor::access_predictions_tensor(ITensor &tensor)
 {
+    return;
     // Get the predicted class
     std::vector<T>      classes_prob;
     std::vector<size_t> index;
