@@ -125,6 +125,11 @@ armcl:
 	cd module/ArmCL && \
 		scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=1 cppthreads=1 openmp=0 arch=armv8a example=0 -j$(shell nproc --all)
 
+originarmcl: 
+	cd module/OriginArmCL && \
+		scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=1 cppthreads=1 openmp=0 arch=armv8a example=0 -j$(shell nproc --all)
+
+
 
 clean:
 	rm -rf module/OpenCV/build

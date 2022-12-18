@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.4.1)
 SET(PROJ_NAME chacha)
 project(${PROJ_NAME})
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARM_COMPUTE_CL")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -DARM_COMPUTE_CL")
 
 # https://docs.openvino.ai/latest/openvino_docs_OV_UG_Integrate_OV_with_your_application.html#doxid-openvino-docs-o-v-u-g-integrate-o-v-with-your-application
 

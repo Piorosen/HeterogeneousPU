@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 {
     // auto vino = run_vino();
     // auto rkn = run_rknn();
-
+    run_neon();
 
     return 0;
 }
