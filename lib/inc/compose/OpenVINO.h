@@ -63,6 +63,7 @@ std::vector<double> run_vino() {
     // OPENVINO_ASSERT(model->inputs().size() == 1, "Sample supports models with 1 input only");
     // OPENVINO_ASSERT(model->outputs().size() == 1, "Sample supports models with 1 output only");
 
+    // std::shared_ptr<ov::Model> model = core.read_model("./openvino/resnet101.xml");
     std::shared_ptr<ov::Model> model = core.read_model("./openvino/resnet101.xml");
     // show(model.get());
     int width, height, c;
