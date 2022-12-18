@@ -17,3 +17,6 @@ link/
 .vscode/
 module/OpenCV/
 sample/
+scripts/vgg16
+scripts/model
+scripts/resnet50
