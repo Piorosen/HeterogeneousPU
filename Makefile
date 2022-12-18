@@ -40,10 +40,11 @@ build:
 	cd build && ninja install
 		
 
-configure: rknn armcl
-	cp module/ArmCL/build/*.a link/
+configure: rknn 
+	# cp module/ArmCL/build/*.a link/
+	# cp module/ArmCL/build/*.so link/
+
 	cp module/SimpleRKNN/bin/*.a link/
-	cp module/ArmCL/build/*.so link/
 	cp module/SimpleRKNN/bin/*.so link/
 	# cd module/OpenVINO/build && make install
 	

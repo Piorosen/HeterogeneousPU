@@ -13,7 +13,7 @@
 int main(int argc, char **argv)
 {
     // auto vino = run_vino();
-    auto rkn = run_rknn();
+    // auto rkn = run_rknn();
 
 
     return 0;

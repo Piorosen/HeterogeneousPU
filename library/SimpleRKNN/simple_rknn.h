@@ -7,6 +7,13 @@
 #include <SimpleRKNN/option.h>  
 #include <SimpleRKNN/info_rknn.h>
 
+
+namespace rknn { 
+
+void run_loop();
+void close_loop();
+
+
 class simple_rknn
 {
 private:
@@ -15,12 +22,18 @@ private:
     int model_size;
 
     int batchs, tensor_size;
+    info_rknn info;
+
 public:
-    simple_rknn() {}
+    simple_rknn() { info.input_tensor_size = 0; }
     ~simple_rknn();
+    
     // load rknn with init context 
     // intput, output tenosr info
     error load_model(const std::string file);
+    
+    void* load_image(const char *image_path, tensor_format layout);
+    void free_image(void* image);
 
     info_rknn get_info() const;
 
@@ -31,5 +44,5 @@ public:
                             std::function<void(void*, uint32_t)> callback = nullptr);
 
 };
-
+}
 #endif // SIMPLERKNN_LIBRARY_H
