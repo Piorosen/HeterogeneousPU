@@ -45,6 +45,15 @@ add_executable(${PROJ_NAME}
         library/ArmCL/utils/GraphUtils.cpp 
         library/ArmCL/utils/Utils.cpp
 		lib/src/stb_image.cpp
+
+		lib/src/compose/manager.cpp
+
+		lib/src/compose/mali.cpp
+		lib/src/compose/myriad.cpp
+		lib/src/compose/neon.cpp
+		lib/src/compose/rknn.cpp
+
+
 )
 
 
@@ -57,6 +66,7 @@ if (DEFINE_OS STREQUAL "aarch64")
 		arm_compute_core
 		arm_compute_graph
 		arm_compute
+		pthread
 	)
 
 	# RKNN
@@ -64,7 +74,6 @@ if (DEFINE_OS STREQUAL "aarch64")
 	target_link_libraries(${PROJ_NAME}
 		rknn_api
 		SimpleRKNN
-		pthread
 		dl
 	)
 	else()

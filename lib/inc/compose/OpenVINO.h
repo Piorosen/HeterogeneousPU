@@ -67,11 +67,9 @@ std::vector<double> run_vino() {
     std::shared_ptr<ov::Model> model = core.read_model("./openvino/resnet101.xml");
     // show(model.get());
     int width, height, c;
-    unsigned char* data = stbi_load("dog_224x224.jpg", &width, &height, &c, 0);
     ov::element::Type input_type = ov::element::u8;
-    ov::Shape input_shape = {1, (unsigned long)height, (unsigned long)width, (unsigned long)c};
-
-    ov::Tensor input_tensor = ov::Tensor(input_type, input_shape, data);
+    // ov::Shape input_shape = {1, (unsigned long)height, (unsigned long)width, (unsigned long)c};
+    ov::Shape input_shape = {1, (unsigned long)224, (unsigned long)224, (unsigned long)3};
 
     const ov::Layout tensor_layout{"NHWC"};
 
@@ -103,6 +101,8 @@ std::vector<double> run_vino() {
     ov::InferRequest infer_request = compiled_model.create_infer_request();
 
     // -------- Step 7. Prepare input --------
+    unsigned char* data = stbi_load("dog_224x224.jpg", &width, &height, &c, 0);
+    ov::Tensor input_tensor = ov::Tensor(input_type, input_shape, data);
     infer_request.set_input_tensor(input_tensor);
 
     // -------- Step 8. Do inference synchronously --------

@@ -118,14 +118,15 @@ graph
     // Finalize graph
     GraphConfig config;
     
-    graph.finalize(arm_compute::graph::Target::CL, config);
+    graph.finalize(arm_compute::graph::Target::NEON, config);
 
     for (int i = 0; i < 300; i++)
     {
         auto compute = high_resolution_clock::now();
         // Run graph
         graph.run();
-        cout << (high_resolution_clock::now() - compute).count() / 1000 / 1000 << "\n";
+
+       //  cout << (high_resolution_clock::now() - compute).count() / 1000 / 1000 << "\n";
     }
 }
 
