@@ -1,6 +1,15 @@
-import onnx
+# import onnx
+
+# from onnx_tf.backend import prepare
+
+# onnx_model = onnx.load("input_path")  # load onnx model
+# tf_rep = prepare(onnx_model)  # prepare tf representation
+# tf_rep.export_graph("output_path")  # export the model
+
+
 import argparse
 from onnx2keras import onnx_to_keras
+import onnx
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('tflite to rknn')
@@ -8,7 +17,7 @@ if __name__ == '__main__':
     parser.add_argument('-o', dest='outputFile', type=str, required=True, help='rknn 출력할 파일 명')
     args = parser.parse_args()
     # Load ONNX model
-    onnx_model = onnx.load(args.modelFile)
+    # onnx_model = onnx.load(args.modelFile)
     
     # Call the converter (input - is the main model input name, can be different for your model)
     k_model = onnx_to_keras(onnx_model, ['input'])
