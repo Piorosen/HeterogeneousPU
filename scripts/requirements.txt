@@ -1,5 +1,9 @@
 tensorflow
-onnx2keras
+tensorflow-addons
 numpy
 argparse
 onnx
+onnxruntime
+onnx2keras
+onnx-tf
+tensorflow-probability
