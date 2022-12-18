@@ -38,6 +38,7 @@
 #include "arm_compute/core/Types.h"
 #include "arm_compute/core/experimental/IPostOp.h"
 #include "arm_compute/core/experimental/PostOps.h"
+#include "arm_compute/dynamic_fusion/sketch/OperatorAttributes.h"
 #include "arm_compute/runtime/CL/CLTunerTypes.h"
 #include "arm_compute/runtime/CL/CLTypes.h"
 #include "arm_compute/runtime/FunctionDescriptors.h"
@@ -472,6 +473,16 @@ inline ::std::ostream &operator<<(::std::ostream &os, const BoundingBoxTransform
     return os;
 }
 
+#if defined(ARM_COMPUTE_ENABLE_BF16)
+inline ::std::ostream &operator<<(::std::ostream &os, const bfloat16 &v)
+{
+    std::stringstream str;
+    str << v;
+    os << str.str();
+    return os;
+}
+#endif /* defined(ARM_COMPUTE_ENABLE_BF16) */
+
 /** Formatted output of the BoundingBoxTransformInfo type.
  *
  * @param[in] bbox_info Type to output.
@@ -617,6 +628,12 @@ inline ::std::ostream &operator<<(::std::ostream &os, const ActivationLayerInfo:
             break;
         case ActivationLayerInfo::ActivationFunction::HARD_SWISH:
             os << "HARD_SWISH";
+            break;
+        case ActivationLayerInfo::ActivationFunction::SWISH:
+            os << "SWISH";
+            break;
+        case ActivationLayerInfo::ActivationFunction::GELU:
+            os << "GELU";
             break;
 
         default:
@@ -2310,6 +2327,9 @@ inline ::std::ostream &operator<<(::std::ostream &os, const GPUTarget &gpu_targe
         case GPUTarget::GPU_ARCH_MASK:
             os << "GPU_ARCH_MASK";
             break;
+        case GPUTarget::GPU_GENERATION_MASK:
+            os << "GPU_GENERATION_MASK";
+            break;
         case GPUTarget::MIDGARD:
             os << "MIDGARD";
             break;
@@ -2343,20 +2363,50 @@ inline ::std::ostream &operator<<(::std::ostream &os, const GPUTarget &gpu_targe
         case GPUTarget::G51LIT:
             os << "G51LIT";
             break;
+        case GPUTarget::G31:
+            os << "G31";
+            break;
         case GPUTarget::G76:
             os << "G76";
+            break;
+        case GPUTarget::G52:
+            os << "G52";
+            break;
+        case GPUTarget::G52LIT:
+            os << "G52LIT";
             break;
         case GPUTarget::G77:
             os << "G77";
             break;
+        case GPUTarget::G57:
+            os << "G57";
+            break;
         case GPUTarget::G78:
             os << "G78";
             break;
-        case GPUTarget::G31:
-            os << "G31";
+        case GPUTarget::G68:
+            os << "G68";
+            break;
+        case GPUTarget::G78AE:
+            os << "G78AE";
             break;
         case GPUTarget::G710:
             os << "G710";
+            break;
+        case GPUTarget::G610:
+            os << "G610";
+            break;
+        case GPUTarget::G510:
+            os << "G510";
+            break;
+        case GPUTarget::G310:
+            os << "G310";
+            break;
+        case GPUTarget::G715:
+            os << "G715";
+            break;
+        case GPUTarget::G615:
+            os << "G615";
             break;
         default:
             ARM_COMPUTE_ERROR("NOT_SUPPORTED!");
@@ -3236,6 +3286,148 @@ inline std::string to_string(const Conv3dInfo &conv3d_info)
     return str.str();
 }
 
+/** Formatted output of the arm_compute::WeightFormat type.
+ *
+ * @param[in] wf arm_compute::WeightFormat Type to output.
+ *
+ * @return Formatted string.
+ */
+inline std::string to_string(const WeightFormat wf)
+{
+#define __CASE_WEIGHT_FORMAT(wf) \
+case WeightFormat::wf:       \
+    return #wf;
+    switch(wf)
+    {
+            __CASE_WEIGHT_FORMAT(UNSPECIFIED)
+            __CASE_WEIGHT_FORMAT(ANY)
+            __CASE_WEIGHT_FORMAT(OHWI)
+            __CASE_WEIGHT_FORMAT(OHWIo2)
+            __CASE_WEIGHT_FORMAT(OHWIo4)
+            __CASE_WEIGHT_FORMAT(OHWIo8)
+            __CASE_WEIGHT_FORMAT(OHWIo16)
+            __CASE_WEIGHT_FORMAT(OHWIo32)
+            __CASE_WEIGHT_FORMAT(OHWIo64)
+            __CASE_WEIGHT_FORMAT(OHWIo128)
+            __CASE_WEIGHT_FORMAT(OHWIo4i2)
+            __CASE_WEIGHT_FORMAT(OHWIo4i2_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo8i2)
+            __CASE_WEIGHT_FORMAT(OHWIo8i2_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo16i2)
+            __CASE_WEIGHT_FORMAT(OHWIo16i2_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo32i2)
+            __CASE_WEIGHT_FORMAT(OHWIo32i2_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo64i2)
+            __CASE_WEIGHT_FORMAT(OHWIo64i2_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo4i4)
+            __CASE_WEIGHT_FORMAT(OHWIo4i4_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo8i4)
+            __CASE_WEIGHT_FORMAT(OHWIo8i4_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo16i4)
+            __CASE_WEIGHT_FORMAT(OHWIo16i4_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo32i4)
+            __CASE_WEIGHT_FORMAT(OHWIo32i4_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo64i4)
+            __CASE_WEIGHT_FORMAT(OHWIo64i4_bf16)
+            __CASE_WEIGHT_FORMAT(OHWIo2i8)
+            __CASE_WEIGHT_FORMAT(OHWIo4i8)
+            __CASE_WEIGHT_FORMAT(OHWIo8i8)
+            __CASE_WEIGHT_FORMAT(OHWIo16i8)
+            __CASE_WEIGHT_FORMAT(OHWIo32i8)
+            __CASE_WEIGHT_FORMAT(OHWIo64i8)
+        default:
+            return "invalid value";
+    }
+#undef __CASE_WEIGHT_FORMAT
+}
+
+/** Formatted output of the arm_compute::WeightFormat type.
+ *
+ * @param[out] os Output stream.
+ * @param[in]  wf WeightFormat to output.
+ *
+ * @return Modified output stream.
+ */
+inline ::std::ostream &operator<<(::std::ostream &os, const arm_compute::WeightFormat &wf)
+{
+    os << to_string(wf);
+    return os;
+}
+
+/** Formatted output of the std::tuple<TensorShape, TensorShape, arm_compute::WeightFormat> tuple.
+ *
+ * @param[in] values tuple of input and output tensor shapes and WeightFormat used.
+ *
+ * @return Formatted string.
+ */
+inline std::string to_string(const std::tuple<TensorShape, TensorShape, arm_compute::WeightFormat> values)
+{
+    std::stringstream str;
+    str << "[Input shape = " << std::get<0>(values);
+    str << ", ";
+    str << "Expected output shape = " << std::get<1>(values);
+
+    str << ", ";
+    str << "WeightFormat = " << std::get<2>(values) << "]";
+    return str.str();
+}
+
+/** Formatted output of the Padding2D type.
+ *
+ * @param[out] os        Output stream.
+ * @param[in]  padding2d Padding info for 2D dimension shape.
+ *
+ * @return Modified output stream.
+ */
+inline ::std::ostream &operator<<(::std::ostream &os, const Padding2D &padding2d)
+{
+    os << padding2d.left << "," << padding2d.right << ","
+       << padding2d.top << "," << padding2d.bottom;
+    return os;
+}
+
+/** Converts a @ref Padding2D to string
+ *
+ * @param[in] padding2d Padding2D value to be converted
+ *
+ * @return String representing the corresponding Padding2D
+ */
+inline std::string to_string(const Padding2D &padding2d)
+{
+    std::stringstream str;
+    str << padding2d;
+    return str.str();
+}
+
+/** Formatted output of the arm_compute::experimental::dynamic_fusion::Conv2dAttributes type.
+ *
+ * @param[out] os          Output stream.
+ * @param[in]  conv2d_attr arm_compute::experimental::dynamic_fusion::Conv2dAttributes type to output.
+ *
+ * @return Modified output stream.
+ */
+inline ::std::ostream &operator<<(::std::ostream &os, const experimental::dynamic_fusion::Conv2dAttributes &conv2d_attr)
+{
+    os << "Conv2dAttributes="
+       << "["
+       << "Padding=" << conv2d_attr.pad() << ", "
+       << "Size2D=" << conv2d_attr.stride() << ", "
+       << "Dialation=" << conv2d_attr.dilation() << "]";
+
+    return os;
+}
+/** Formatted output of the arm_compute::experimental::dynamic_fusion::Conv2dAttributes type.
+ *
+ * @param[in] conv2d_attr arm_compute::experimental::dynamic_fusion::Conv2dAttributes type to output.
+ *
+ * @return Formatted string.
+ */
+inline std::string to_string(const experimental::dynamic_fusion::Conv2dAttributes &conv2d_attr)
+{
+    std::stringstream str;
+    str << conv2d_attr;
+    return str.str();
+}
 } // namespace arm_compute
 
 #endif /* __ARM_COMPUTE_TYPE_PRINTER_H__ */
