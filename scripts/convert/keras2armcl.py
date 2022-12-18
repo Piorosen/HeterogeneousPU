@@ -10,12 +10,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(args.modelFile)
     model = tf.keras.models.load_model(args.modelFile)
-    
-    object_methods = [method_name for method_name in dir(object)
-                  if callable(getattr(object, method_name))]
-    print(object_methods)
     print(model)
-    # print(model.summary())
+    print(model.summary())
     # ai_model = tf.keras.applications.vgg16.VGG16(
     #     include_top=True,
     #     weights='imagenet',
