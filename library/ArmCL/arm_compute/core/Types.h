@@ -782,6 +782,20 @@ private:
     DimensionRoundingType _round_type;
 };
 
+/** Padding information for 2D operations like Conv2d */
+struct Padding2D
+{
+    Padding2D() = default;
+    Padding2D(size_t left, size_t right, size_t top, size_t bottom)
+        : left(left), right(right), top(top), bottom(bottom)
+    {
+    }
+    size_t left   = { 0 }; /**<  Padding across the width dimension on the left, in elements. */
+    size_t right  = { 0 }; /**<  Padding across the width dimension on the right, in elements. */
+    size_t top    = { 0 }; /**<  Padding across the height dimension on the top, in elements. */
+    size_t bottom = { 0 }; /**<  Padding across the height dimension on the bottom, in elements. */
+};
+
 /** Padding information for 3D operations like Conv3d */
 struct Padding3D
 {
@@ -1641,8 +1655,13 @@ public:
         SQRT,            /**< Square root ( \f$ f(x) = \sqrt{x} \f$ )*/
         LINEAR,          /**< Linear ( \f$ f(x)= ax + b \f$ ) */
         IDENTITY,        /**< Identity ( \f$ f(x)= x \f$ ) */
-        HARD_SWISH       /**< Hard-swish ( \f$ f(x) = (x * relu6(x+3))/6 \f$ ) */
+        HARD_SWISH,      /**< Hard-swish ( \f$ f(x) = (x \text{ReLU6}(x+3))/6 = x \min(\max(0,x+3),6)/6 \f$ ) */
+        SWISH,           /**< Swish ( \f$ f(x) = \frac{x}{1 + e^{-ax}} = x \text{logistic}(ax) \f$ ) */
+        GELU             /**< GELU ( \f$ f(x) = x * 1/2 * 1 + erf(x / \sqrt{2}) \f$ ) */
     };
+
+    /** Lookup table  */
+    using LookupTable256 = std::array<qasymm8_t, 256>;
 
     ActivationLayerInfo() = default;
     /** Default Constructor
@@ -1677,11 +1696,113 @@ public:
         return _enabled;
     }
 
+#ifdef __aarch64__
+    const LookupTable256 &lut() const
+    {
+        return _lut;
+    }
+
+    void init_lut(DataType data_type, const UniformQuantizationInfo &qi_in, const UniformQuantizationInfo &qi_out)
+    {
+        if(_act == ActivationFunction::HARD_SWISH)
+        {
+            if(data_type == DataType::QASYMM8)
+            {
+                qasymm8_hard_swish_populate_table(_lut, qi_in, qi_out);
+            }
+            else
+            {
+                qasymm8_signed_hard_swish_populate_table(_lut, qi_in, qi_out);
+            }
+        }
+        else if(_act == ActivationFunction::LEAKY_RELU)
+        {
+            qasymm8_leaky_relu_populate_table(_lut, qi_in, qi_out, _a);
+        }
+        else if(_act == ActivationFunction::LOGISTIC)
+        {
+            if(data_type == DataType::QASYMM8)
+            {
+                qasymm8_logistic_populate_table(_lut, qi_in, qi_out);
+            }
+            else
+            {
+                qasymm8_signed_logistic_populate_table(_lut, qi_in, qi_out);
+            }
+        }
+    }
+#endif // __aarch64__
+
+    static inline bool is_lut_supported(ActivationFunction act_func, DataType data_type)
+    {
+#ifdef __aarch64__
+        switch(act_func)
+        {
+            case ActivationFunction::HARD_SWISH:
+                return data_type == DataType::QASYMM8 || data_type == DataType::QASYMM8_SIGNED;
+            case ActivationFunction::LEAKY_RELU:
+                return data_type == DataType::QASYMM8;
+            case ActivationFunction::LOGISTIC:
+                return data_type == DataType::QASYMM8 || data_type == DataType::QASYMM8_SIGNED;
+            default:
+                return false;
+        }
+#else  // __aarch64__
+        ARM_COMPUTE_UNUSED(act_func);
+        ARM_COMPUTE_UNUSED(data_type);
+        return false;
+#endif // __aarch64__
+    }
+
 private:
     ActivationFunction _act     = { ActivationLayerInfo::ActivationFunction::IDENTITY };
     float              _a       = {};
     float              _b       = {};
     bool               _enabled = { false };
+
+#ifdef __aarch64__
+    LookupTable256 _lut = {};
+
+    static inline void qasymm8_hard_swish_populate_table(LookupTable256 &lut, const UniformQuantizationInfo &qi_in, const UniformQuantizationInfo &qi_out)
+    {
+        for(size_t i = 0; i < lut.size(); ++i)
+        {
+            lut[i] = qasymm8_hard_swish(i, qi_in, qi_out);
+        }
+    }
+
+    static inline void qasymm8_signed_hard_swish_populate_table(LookupTable256 &lut, const UniformQuantizationInfo &qi_in, const UniformQuantizationInfo &qi_out)
+    {
+        for(size_t i = 0; i < lut.size(); ++i)
+        {
+            lut[i] = qasymm8_signed_hard_swish(i, qi_in, qi_out);
+        }
+    }
+
+    static inline void qasymm8_leaky_relu_populate_table(LookupTable256 &lut, const UniformQuantizationInfo &qi_in, const UniformQuantizationInfo &qi_out, float alpha)
+    {
+        for(size_t i = 0; i < lut.size(); ++i)
+        {
+            lut[i] = qasymm8_leaky_relu(i, qi_in, qi_out, alpha);
+        }
+    }
+
+    static inline void qasymm8_logistic_populate_table(LookupTable256 &lut, const UniformQuantizationInfo &qi_in, const UniformQuantizationInfo &qi_out)
+    {
+        for(size_t i = 0; i < lut.size(); ++i)
+        {
+            lut[i] = qasymm8_logistic(i, qi_in, qi_out);
+        }
+    }
+
+    static inline void qasymm8_signed_logistic_populate_table(LookupTable256 &lut, const UniformQuantizationInfo &qi_in, const UniformQuantizationInfo &qi_out)
+    {
+        for(size_t i = 0; i < lut.size(); ++i)
+        {
+            lut[i] = qasymm8_signed_logistic(static_cast<int8_t>(i), qi_in, qi_out);
+        }
+    }
+#endif // __aarch64__
 };
 
 /** Fully connected layer info */
@@ -1840,13 +1961,121 @@ private:
     int32_t _shrink_axis_mask;
 };
 
+/** Memory layouts for the weights tensor.
+  *
+  * * UNSPECIFIED is used to select kernels that do not run in
+  *    variable weights mode.
+  *
+  * * ANY is used to query the kernel database to retrieve any of the
+  *   kernels that runs in variable weights mode. Once a kernel is
+  *   found, the specific format expected by the kernel can be
+  *   retrieved by the user for reordering the weights tensor
+  *   accordingly.
+  *
+  * The other values OHWIo{interleave_by}i{block_by} describe the
+  * memory layout of a 4D tensor with layout OHWI that has been
+  * transformed into a 4D tensor with dimensions O'HWI' where:
+  *
+  * O' = first multiple of {interleave_by} s.t. O<=O'
+  * I' = first multiple of {block_by} s.t. I<=I'
+  *
+  * The total size of the dst tensor is O' x H x W x I'
+  *
+  * The access function of the tensor with layout
+  * OHWIo{interleave_by}i{block_by} and size O'HWI' is a 6-parameter
+  * access function, where the 6 parameters are computed as follows:
+  *
+  * x5 = floor(o/{interleave_by}) RANGE [0, O'/{interleave_by} -1] SIZE: O'/{interleave_by}
+  *
+  * x4 = h                        RANGE [0, H-1]                   SIZE: H
+  * x3 = w                        RANGE [0, W-1]                   SIZE: W
+  * x2 = floor(i/{block_by})      RANGE [0, I'/{block_by} -1]      SIZE: I'/{block_by}
+  * x1 = o%{interleave_by}        RANGE [0, {interleave_by} -1]    SIZE: {interleave_by}
+  * x0 = i%{block_by}             RANGE [0, {block_by} -1]         SIZE: {block_by}
+  *                                                          TOTAL SIZE: O' * H * W * I'
+  *
+  *        4D                       6D
+  * -----------------   -----------------------------------
+  * value(o, h, w, i) =   x5 * H * W * I' * {interleave_by}
+  *                     + x4 * W * I' * {interleave_by}
+  *                     + x3 * I' * {interleave_by}
+  *                     + x2 * {interleave_by} * {block_by}
+  *                     + x1 * {block_by}
+  *                     + x0
+  *
+  * Notice that in arm_gemm the 4D tensor of dimension O'HWI' created
+  * for the OHWIo{interleave_by}i{block_by} format is in reality seen
+  * as a 2D tensor, where the number of rows is O'/{interleave_by}
+  * and the number of columns is {interleave_by} * H * W * I'.
+  *
+  * The postfix *_bf16 is for the memory layout needed for the
+  * fast-mode kernels, in which the weights are passed in bfloat16
+  * format.
+  */
+enum class WeightFormat
+{
+    UNSPECIFIED    = 0x1,
+    ANY            = 0x2,
+    OHWI           = 0x100100,
+    OHWIo2         = 0x100200,
+    OHWIo4         = 0x100400,
+    OHWIo8         = 0x100800,
+    OHWIo16        = 0x101000,
+    OHWIo32        = 0x102000,
+    OHWIo64        = 0x104000,
+    OHWIo128       = 0x108000,
+    OHWIo4i2       = 0x200400,
+    OHWIo4i2_bf16  = 0x200410,
+    OHWIo8i2       = 0x200800,
+    OHWIo8i2_bf16  = 0x200810,
+    OHWIo16i2      = 0x201000,
+    OHWIo16i2_bf16 = 0x201010,
+    OHWIo32i2      = 0x202000,
+    OHWIo32i2_bf16 = 0x202010,
+    OHWIo64i2      = 0x204000,
+    OHWIo64i2_bf16 = 0x204010,
+    OHWIo4i4       = 0x400400,
+    OHWIo4i4_bf16  = 0x400410,
+    OHWIo8i4       = 0x400800,
+    OHWIo8i4_bf16  = 0x400810,
+    OHWIo16i4      = 0x401000,
+    OHWIo16i4_bf16 = 0x401010,
+    OHWIo32i4      = 0x402000,
+    OHWIo32i4_bf16 = 0x402010,
+    OHWIo64i4      = 0x404000,
+    OHWIo64i4_bf16 = 0x404010,
+    OHWIo2i8       = 0x800200,
+    OHWIo4i8       = 0x800400,
+    OHWIo8i8       = 0x800800,
+    OHWIo16i8      = 0x801000,
+    OHWIo32i8      = 0x802000,
+    OHWIo64i8      = 0x804000
+};
+// OHWIo<interleave_by>i<block_by>
+inline int interleave_by(const WeightFormat wf)
+{
+    return (static_cast<int>(wf) >> 8) & 0xFFF;
+}
+inline int block_by(const WeightFormat wf)
+{
+    return (static_cast<int>(wf) >> 20) & 0xF;
+}
+inline bool is_fixed_format(const WeightFormat &wf)
+{
+    return wf != WeightFormat::UNSPECIFIED && wf != WeightFormat::ANY;
+}
+inline bool is_fixed_format_fast_math(const WeightFormat &wf)
+{
+    return (static_cast<int>(wf) >> 4) & 0x1;
+}
+
 /** Convolution Layer Weights Information class. This class stores the necessary information to compute convolution layer when the weights are already reshaped */
 class WeightsInfo
 {
 public:
     /** Default constructor */
     WeightsInfo()
-        : _are_reshaped(false), _kernel_width(0), _kernel_height(0), _num_kernels(0), _retain_internal_weights(false)
+        : _are_reshaped(false), _kernel_width(0), _kernel_height(0), _num_kernels(0), _retain_internal_weights(false), _weight_format(arm_compute::WeightFormat::UNSPECIFIED)
     {
     }
     /** Constructor
@@ -1856,9 +2085,11 @@ public:
      * @param[in] kernel_height           Kernel height.
      * @param[in] num_kernels             Number of convolution kernels.
      * @param[in] retain_internal_weights (Optional) True if internal reshaped weights must be retained. Used for reconfiguration purposes. Default is false.
+     * @param[in] weight_format           (Optional) arm_gemm:WeightFormat enumeration requested by the user. Default is arm_compute::WeightFormat::UNSPECIFIED.
      */
-    WeightsInfo(bool are_reshaped, unsigned int kernel_width, unsigned int kernel_height, unsigned int num_kernels, bool retain_internal_weights = false)
-        : _are_reshaped(are_reshaped), _kernel_width(kernel_width), _kernel_height(kernel_height), _num_kernels(num_kernels), _retain_internal_weights(retain_internal_weights)
+    WeightsInfo(bool are_reshaped, unsigned int kernel_width, unsigned int kernel_height, unsigned int num_kernels, bool retain_internal_weights = false,
+                arm_compute::WeightFormat weight_format = arm_compute::WeightFormat::UNSPECIFIED)
+        : _are_reshaped(are_reshaped), _kernel_width(kernel_width), _kernel_height(kernel_height), _num_kernels(num_kernels), _retain_internal_weights(retain_internal_weights), _weight_format(weight_format)
     {
     }
     /** Flag which specifies if the weights tensor has been reshaped.
@@ -1889,13 +2120,31 @@ public:
     {
         return _retain_internal_weights;
     }
+    arm_compute::WeightFormat weight_format() const
+    {
+        return _weight_format;
+    }
+    void set_weight_format(arm_compute::WeightFormat weight_format)
+    {
+        _weight_format = weight_format;
+    }
+
+    unsigned int kernel_width() const
+    {
+        return _kernel_width;
+    }
+    unsigned int kernel_height() const
+    {
+        return _kernel_height;
+    }
 
 private:
-    bool         _are_reshaped;
-    unsigned int _kernel_width;
-    unsigned int _kernel_height;
-    unsigned int _num_kernels;
-    bool         _retain_internal_weights;
+    bool                      _are_reshaped;
+    unsigned int              _kernel_width;
+    unsigned int              _kernel_height;
+    unsigned int              _num_kernels;
+    bool                      _retain_internal_weights;
+    arm_compute::WeightFormat _weight_format;
 };
 
 /** GEMM reshape information class. This class stores the necessary information about matrix A and matrix B reshape.
@@ -2105,7 +2354,9 @@ public:
           _pretranspose_A(false),
           _pretranspose_B(false),
           _activation_info(),
-          _post_ops()
+          _post_ops(),
+          _fixed_format(false),
+          _weight_format(arm_compute::WeightFormat::UNSPECIFIED)
     {
     }
     /** Constructor
@@ -2124,10 +2375,13 @@ public:
      * @param[in] broadcast_bias              (Optional) Broadcast the shape of the bias tensor from a vector to a matrix.
      * @param[in] activation_info             (Optional) Activation to apply after the matrix multiplication
      * @param[in] post_ops                    (Optional) A sequence of post operations that are performed after the main operation.
+     * @param[in] fixed_format                (Optional) Specify the selection of fixed format kernels for variable weights support in GEMM. These kernels expect the weights tensor to be in amemory format that is fixed by the kernel itself. For more information, see arm_compute::WeightFormat.
+     * @param[in] weight_format               (Optional) arm_gemm:WeightFormat enumeration requested by the user. Default is arm_compute::WeightFormat::UNSPECIFIED.
      */
     GEMMInfo(bool is_a_reshaped, bool is_b_reshaped, bool reshape_b_only_on_first_run, int depth_output_gemm3d = 0, bool reinterpret_input_as_3d = false, bool retain_internal_weights = false,
              GEMMLowpOutputStageInfo gemmlowp_output_stage = GEMMLowpOutputStageInfo(), bool fp_mixed_precision = false, bool fast_math = false, bool broadcast_bias = false,
-             const ActivationLayerInfo &activation_info = ActivationLayerInfo(), const experimental::PostOpList<ITensorInfo *> &post_ops = experimental::PostOpList<ITensorInfo *>()) noexcept
+             const ActivationLayerInfo &activation_info = ActivationLayerInfo(), const experimental::PostOpList<ITensorInfo *> &post_ops = experimental::PostOpList<ITensorInfo *>(),
+             bool fixed_format = false, arm_compute::WeightFormat weight_format = arm_compute::WeightFormat::UNSPECIFIED) noexcept
         : _is_a_reshaped(is_a_reshaped),
           _is_b_reshaped(is_b_reshaped),
           _reshape_b_only_on_first_run(reshape_b_only_on_first_run),
@@ -2141,7 +2395,9 @@ public:
           _pretranspose_A(false),
           _pretranspose_B(false),
           _activation_info(activation_info),
-          _post_ops(post_ops)
+          _post_ops(post_ops),
+          _fixed_format(fixed_format),
+          _weight_format(weight_format)
     {
     }
     /** Flag which specifies if the matrix A has been reshaped
@@ -2306,6 +2562,37 @@ public:
     {
         _post_ops = post_ops;
     }
+    /** Flag which specifies if the GEMM operation is running fixed-format kernels.
+     *
+     * @return True if the GEMM operation is running fixed-format kernel else false.
+     */
+    bool fixed_format() const
+    {
+        return _fixed_format;
+    }
+
+    /** Set fixed-format flag
+     *
+     * @param[in] fixed_format sets whether or not to use fixed-format kernels
+     */
+    void set_fixed_format(bool fixed_format)
+    {
+        _fixed_format = fixed_format;
+    }
+
+    arm_compute::WeightFormat weight_format() const
+    {
+        return _weight_format;
+    }
+
+    /** Set weight format to be used
+     *
+     * @param[in] weight_format arm_compute::WeightFormat enumeration
+     */
+    void set_weight_format(arm_compute::WeightFormat weight_format)
+    {
+        _weight_format = weight_format;
+    }
 
 private:
     bool                                    _is_a_reshaped;
@@ -2322,6 +2609,8 @@ private:
     bool                                    _pretranspose_B;
     ActivationLayerInfo                     _activation_info;
     experimental::PostOpList<ITensorInfo *> _post_ops;
+    bool                                    _fixed_format;
+    arm_compute::WeightFormat               _weight_format;
 };
 
 /** Winograd information */

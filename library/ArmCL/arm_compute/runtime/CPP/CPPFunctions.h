@@ -1,5 +1,5 @@
-    /*
- * Copyright (c) 2016-2021 Arm Limited.
+/*
+ * Copyright (c) 2017-2020 Arm Limited.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -21,58 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ARM_COMPUTE_CPPSCHEDULER_H
-#define ARM_COMPUTE_CPPSCHEDULER_H
+#ifndef ARM_COMPUTE_CPPFUNCTIONS_H
+#define ARM_COMPUTE_CPPFUNCTIONS_H
 
-#include "arm_compute/core/experimental/Types.h"
-#include "arm_compute/runtime/IScheduler.h"
+/* Header regrouping all the CPP functions */
+#include "arm_compute/runtime/CPP/functions/CPPBoxWithNonMaximaSuppressionLimit.h"
+#include "arm_compute/runtime/CPP/functions/CPPDetectionOutputLayer.h"
+#include "arm_compute/runtime/CPP/functions/CPPDetectionPostProcessLayer.h"
+#include "arm_compute/runtime/CPP/functions/CPPNonMaximumSuppression.h"
+#include "arm_compute/runtime/CPP/functions/CPPPermute.h"
+#include "arm_compute/runtime/CPP/functions/CPPSplit.h"
+#include "arm_compute/runtime/CPP/functions/CPPTopKV.h"
+#include "arm_compute/runtime/CPP/functions/CPPUpsample.h"
 
-#include <memory>
-
-namespace arm_compute
-{
-/** C++11 implementation of a pool of threads to automatically split a kernel's execution among several threads.
- *
- * It has 2 scheduling modes: Linear or Fanout (please refer to the implementation for details)
- * The mode is selected automatically based on the runtime environment. However it can be forced via an environment
- * variable ARM_COMPUTE_CPP_SCHEDULER_MODE. e.g.:
- * ARM_COMPUTE_CPP_SCHEDULER_MODE=linear      # Force select the linear scheduling mode
- * ARM_COMPUTE_CPP_SCHEDULER_MODE=fanout      # Force select the fanout scheduling mode
-*/
-class CPPScheduler final : public IScheduler
-{
-public:
-    /** Constructor: create a pool of threads. */
-    CPPScheduler();
-    /** Default destructor */
-    ~CPPScheduler();
-
-    /** Access the scheduler singleton
-     *
-     * @note this method has been deprecated and will be remover in future releases
-     * @return The scheduler
-     */
-    static CPPScheduler &get();
-    std::vector<arm_compute::CPUModel> generate_core_thread() override;
-
-    // Inherited functions overridden
-    void set_num_threads(unsigned int num_threads) override;
-    void set_num_threads_with_affinity(unsigned int num_threads, BindFunc func) override;
-    unsigned int num_threads() const override;
-    void schedule(ICPPKernel *kernel, const Hints &hints) override;
-    void schedule_op(ICPPKernel *kernel, const Hints &hints, const Window &window, ITensorPack &tensors) override;
-
-protected:
-    /** Will run the workloads in parallel using num_threads
-     *
-     * @param[in] workloads Workloads to run
-     */
-    void run_workloads(std::vector<Workload> &workloads) override;
-
-private:
-
-    struct Impl;
-    std::unique_ptr<Impl> _impl;
-};
-} // namespace arm_compute
-#endif /* ARM_COMPUTE_CPPSCHEDULER_H */
+#endif /* ARM_COMPUTE_CPPFUNCTIONS_H */

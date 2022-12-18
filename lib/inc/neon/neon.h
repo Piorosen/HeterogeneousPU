@@ -16,7 +16,7 @@ using namespace arm_compute::graph_utils;
 
 class neon_engine : public iengine { 
 private:
-    // Stream graph;
+    Stream* graph;
 
 public:
     virtual std::string get_name() const;

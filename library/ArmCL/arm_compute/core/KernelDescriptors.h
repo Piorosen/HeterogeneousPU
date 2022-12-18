@@ -106,7 +106,17 @@ struct DWCComputeKernelInfo
 {
     unsigned int n0{ 0 };                             /**< Number of columns processed by each thread */
     unsigned int m0{ 0 };                             /**< Number of rows processed by each thread */
+    bool         export_input_to_cl_image{ false };   /**< Export input to cl_image */
     bool         export_weights_to_cl_image{ false }; /**< Export the weights to cl_image */
+};
+
+/** Compute descriptor used by the direct convolution kernel */
+struct DirectConvComputeKernelInfo
+{
+    int32_t m0{ 1 };                             /**< Number of rows to be processed by the kernel */
+    int32_t n0{ 1 };                             /**< Number of columns to be processed by the kernel */
+    int32_t k0{ 1 };                             /**< Number of partial accumulations to be processed in a single iteration by the kernel */
+    bool    export_weights_to_cl_image{ false }; /**< Flag to export the weights to cl_image */
 };
 
 /** Descriptor used by the softmax kernels */

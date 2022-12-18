@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021 Arm Limited.
+ * Copyright (c) 2016-2022 Arm Limited.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -124,6 +124,14 @@ CLVersion get_cl_version(const cl::Device &device);
  */
 size_t get_cl_image_pitch_alignment(const cl::Device &device);
 
+/** Helper function to check whether non-uniform work group is supported
+ *
+ * @param[in] device A CL device
+ *
+ * @return True if the feature is supported
+ */
+bool get_cl_non_uniform_work_group_supported(const cl::Device &device);
+
 /** Helper function to check whether a given extension is supported
  *
  * @param[in] device         A CL device
@@ -234,13 +242,13 @@ bool get_wbsm_support_info(const cl::Device &device);
  */
 void set_wbsm(cl::Kernel &kernel, cl_int wbsm_hint);
 
-/* Helper function to check if we can export the weights to cl_image
+/* Helper function to check if we can export the tensor to cl_image
  *
- * @param[in] tensor Weights tensor
+ * @param[in] input tensor
  *
- * @return true if we can export the weights to cl_image
+ * @return true if we can export the tensor to cl_image
  */
-bool export_weights_to_cl_image(const ITensorInfo *tensor);
+bool export_to_cl_image(const ITensorInfo *tensor);
 
 /* Helper function to force unroll with pragma when any of the input values (iterations) are greater than @ref max_manual_loop_unrolling
  *
@@ -252,5 +260,12 @@ bool export_weights_to_cl_image(const ITensorInfo *tensor);
  */
 void set_unroll_with_pragma(CLBuildOptions &built_opts, std::initializer_list<int> values);
 
+/** Helper function to check whether the cl_arm_matrix_multiply extension is supported
+ *
+ * @param[in] device A CL device
+ *
+ * @return True if the extension is supported
+ */
+bool arm_matrix_multiply_supported(const cl::Device &device);
 } // namespace arm_compute
 #endif /* ARM_COMPUTE_CLHELPERS_H */
