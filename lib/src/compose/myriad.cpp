@@ -26,8 +26,8 @@ void myriad_engine::init(const std::string file) {
     // OPENVINO_ASSERT(model->inputs().size() == 1, "Sample supports models with 1 input only");
     // OPENVINO_ASSERT(model->outputs().size() == 1, "Sample supports models with 1 output only");
 
-    // std::shared_ptr<ov::Model> model = core.read_model("./openvino/resnet101.xml");
-    std::shared_ptr<ov::Model> model = core.read_model("./" + file + "/myriad/saved_model.xml");
+    std::shared_ptr<ov::Model> model = core.read_model("./openvino/resnet101.xml");
+    // std::shared_ptr<ov::Model> model = core.read_model("./" + file + "/myriad/saved_model.xml");
     // show(model.get());
 
     ov::element::Type input_type = ov::element::u8;

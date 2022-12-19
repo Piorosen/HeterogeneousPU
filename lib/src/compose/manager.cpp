@@ -17,8 +17,8 @@ std::vector<compose::engine> compose::manager::engine_list() const {
 std::vector<std::shared_ptr<iengine>> compose::manager::inference_engine() {
     return std::vector<std::shared_ptr<iengine>> {
         // std::make_shared<mali_engine>(),
+        std::make_shared<rknn_engine>(),
         std::make_shared<neon_engine>(),
         std::make_shared<myriad_engine>(),
-        std::make_shared<rknn_engine>(),
     };
 }
