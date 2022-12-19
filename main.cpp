@@ -1,22 +1,12 @@
 #include <iostream>
 #include <compose/manager.h>
 #include <chrono>
-
 #include <thread>
 
 using namespace std::chrono;
 
-
-// #include <spdlog/spdlog.h>
-// #include <SimpleRKNN/simple_rknn.h>
-// #include <ArmCL/arm_compute/runtime/Scheduler.h>
-
-
 int main(int argc, char **argv)
 {
-    // auto vino = run_vino();
-    // auto rkn = run_rknn();
-    // run_neon();
     auto e = compose::manager::instance()->inference_engine();
     
     std::vector<std::thread> chacha;

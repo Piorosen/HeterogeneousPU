@@ -11,8 +11,8 @@ std::string rknn_engine::get_name() const {
 
 void rknn_engine::init(const std::string file) { 
     rknn::run_loop();
-    // lib.load_model("./" + file + "/rknn/" + file + ".rknn");
-    lib.load_model("./mobilenet_v1.rknn");
+    lib.load_model("./" + file + "/rknn/" + file + ".rknn");
+    // lib.load_model("./mobilenet_v1.rknn");
 }
 
 void rknn_engine::inference(const std::string image) {

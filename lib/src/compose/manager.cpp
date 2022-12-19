@@ -8,7 +8,7 @@
 std::vector<compose::engine> compose::manager::engine_list() const {
     return std::vector<compose::engine>{
         compose::engine::myriad,
-        compose::engine::mali,
+        // compose::engine::mali,
         compose::engine::neon,
         compose::engine::rknn,
     };
