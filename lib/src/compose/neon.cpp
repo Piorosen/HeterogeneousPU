@@ -1,7 +1,5 @@
 #include <neon/neon.h>
 
-
-
 using namespace arm_compute;
 using namespace arm_compute::utils;
 using namespace arm_compute::graph::frontend;
@@ -104,10 +102,10 @@ void neon_engine::init(const std::string file) {
 
     GraphConfig config;
     graph->finalize(arm_compute::graph::Target::NEON, config);
-
-
 }
+
 void neon_engine::inference(const std::string image) {
+    graph->run();
     graph->run();
 }
 void neon_engine::deinit() { 
