@@ -26,8 +26,8 @@ void myriad_engine::init(const std::string file) {
     // OPENVINO_ASSERT(model->inputs().size() == 1, "Sample supports models with 1 input only");
     // OPENVINO_ASSERT(model->outputs().size() == 1, "Sample supports models with 1 output only");
 
-    std::shared_ptr<ov::Model> model = core.read_model("./openvino/resnet101.xml");
-    // std::shared_ptr<ov::Model> model = core.read_model("./" + file + "/myriad/saved_model.xml");
+    // std::shared_ptr<ov::Model> model = core.read_model("./openvino/resnet101.xml");
+    std::shared_ptr<ov::Model> model = core.read_model("./" + file + "/myriad/saved_model.xml");
     // show(model.get());
 
     ov::element::Type input_type = ov::element::u8;
@@ -35,7 +35,7 @@ void myriad_engine::init(const std::string file) {
     
 
     // ov::Shape input_shape = {1, (unsigned long)height, (unsigned long)width, (unsigned long)c};
-    input_shape = {1, (unsigned long)227, (unsigned long)227, (unsigned long)3};
+    input_shape = {1, (unsigned long)224, (unsigned long)224, (unsigned long)3};
 
 
     ov::preprocess::PrePostProcessor ppp(model);
@@ -50,7 +50,7 @@ void myriad_engine::init(const std::string file) {
     // - apply linear resize from tensor spatial dims to model spatial dims
     ppp.input().preprocess().resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
     // 4) Here we suppose model has 'NCHW' layout for input
-    ppp.input().model().set_layout("NCHW");
+    ppp.input().model().set_layout("NHWC");
     // 5) Set output tensor information:
     // - precision of tensor is supposed to be 'f32'
     ppp.output().tensor().set_element_type(ov::element::f32);
