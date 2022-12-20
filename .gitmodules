@@ -7,3 +7,6 @@
 [submodule "module/OpenVINO"]
 	path = module/OpenVINO
 	url = https://github.com/openvinotoolkit/openvino
+[submodule "module/args"]
+	path = module/args
+	url = https://github.com/Taywee/args
