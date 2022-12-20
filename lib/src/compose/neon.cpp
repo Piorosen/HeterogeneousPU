@@ -1,4 +1,4 @@
-#include <neon/neon.h>
+#include <compose/neon.h>
 
 using namespace arm_compute;
 using namespace arm_compute::utils;
@@ -10,7 +10,7 @@ std::string neon_engine::get_name() const {
     return "neon";
 }
 
-void neon_engine::init(const std::string file) { 
+void neon_engine::init(const std::string file, compose::model_info info) { 
     graph = new Stream(0, "InferenceModel");
 
     std::string data_path = "./arm";

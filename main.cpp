@@ -9,18 +9,24 @@ using namespace std::chrono;
 int main(int argc, char **argv)
 {
     auto e = compose::manager::instance()->inference_engine();
+    compose::model_info d;
+    d.batch = 1;
+    d.channel = 3;
+    d.height = 224;
+    d.width = 224;
+    d.layout = compose::data_layout::nhwc;
+
     if (e.size() == 0) { 
         printf("not found inference engine");
         return 0;
     }
 
     std::vector<std::thread> chacha;
-    volatile bool toggle = false;
     for (int i = 0; i < e.size() - 1; i++) {
         int p = i;
-        chacha.push_back(std::thread([&toggle, p, &e]() { 
+        chacha.push_back(std::thread([d, p, &e]() { 
             std::cout << e[p]->get_name() << " : start\n";
-            e[p]->init("vgg16");
+            e[p]->init("vgg16", d);
             std::cout << e[p]->get_name() << " : end\n";
             
             for(;;){
@@ -32,7 +38,7 @@ int main(int argc, char **argv)
     }
 
     std::cout << e[e.size() - 1]->get_name() << " : start\n";
-    e[e.size() - 1]->init("vgg16");
+    e[e.size() - 1]->init("vgg16", d);
     std::cout << e[e.size() - 1]->get_name() << " : end\n";
 
     for(;;){

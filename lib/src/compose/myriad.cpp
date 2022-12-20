@@ -1,4 +1,4 @@
-#include <myriad/myriad.h>
+#include <compose/myriad.h>
 #include <stb/stb_image.h>
 #include <vector>
 #include <string>
@@ -12,7 +12,7 @@ std::string myriad_engine::get_name() const {
     return "myriad";
 }
 
-void myriad_engine::init(const std::string file) { 
+void myriad_engine::init(const std::string file, compose::model_info info) { 
     auto version = ov::get_openvino_version();
     cout << version.buildNumber << " :-: " << version.description << "\n";
     std::vector<double> measure_bench;
@@ -31,12 +31,14 @@ void myriad_engine::init(const std::string file) {
     // show(model.get());
 
     ov::element::Type input_type = ov::element::u8;
+
     const ov::Layout tensor_layout{"NHWC"};
     
-
     // ov::Shape input_shape = {1, (unsigned long)height, (unsigned long)width, (unsigned long)c};
-    input_shape = {1, (unsigned long)224, (unsigned long)224, (unsigned long)3};
-
+    input_shape = {(unsigned long)info.batch, 
+                    (unsigned long)info.height, 
+                    (unsigned long)info.width, 
+                    (unsigned long)info.channel};
 
     ov::preprocess::PrePostProcessor ppp(model);
 
@@ -50,7 +52,16 @@ void myriad_engine::init(const std::string file) {
     // - apply linear resize from tensor spatial dims to model spatial dims
     ppp.input().preprocess().resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
     // 4) Here we suppose model has 'NCHW' layout for input
-    ppp.input().model().set_layout("NHWC");
+
+    switch (info.layout) { 
+        case compose::data_layout::nchw:
+            ppp.input().model().set_layout("NCHW");
+            break;
+        case compose::data_layout::nhwc:
+            ppp.input().model().set_layout("NHWC");
+            break;
+    }
+    
     // 5) Set output tensor information:
     // - precision of tensor is supposed to be 'f32'
     ppp.output().tensor().set_element_type(ov::element::f32);

@@ -7,11 +7,12 @@
 class rknn_engine : public iengine { 
 private:
     rknn::simple_rknn lib;
-
+    compose::model_info info;
+    
 public:
     virtual std::string get_name() const;
 
-    virtual void init(const std::string file);
+    virtual void init(const std::string file, compose::model_info info);
     virtual void inference(const std::string image);
     virtual void deinit();
 };

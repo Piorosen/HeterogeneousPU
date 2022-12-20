@@ -1,9 +1,9 @@
 #include <compose/manager.h>
 
-#include <mali/mali.h>
-#include <neon/neon.h>
-#include <rknn/rknn.h>
-#include <myriad/myriad.h>
+#include <compose/mali.h>
+#include <compose/neon.h>
+#include <compose/rknn.h>
+#include <compose/myriad.h>
 
 std::vector<compose::engine> compose::manager::engine_list() const {
     return std::vector<compose::engine>{
