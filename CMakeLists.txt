@@ -5,6 +5,34 @@ project(${PROJ_NAME})
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARM_COMPUTE_CL")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -DARM_COMPUTE_CL")
 
+OPTION(GPU_MALI "use mali gpu" OFF)
+OPTION(NPU_MYRIAD "use myriad npu" ON)
+OPTION(NPU_RKNN "use rknn npu" ON)
+OPTION(CPU_ARM "use arm cpu" OFF)
+
+
+
+if (NPU_MYRIAD)
+message("USE_NPU_MYRIAD")
+add_compile_definitions(USE_NPU_MYRIAD=1)
+endif()
+
+if (NPU_RKNN)
+message("USE_NPU_RKNN")
+add_compile_definitions(USE_NPU_RKNN=1)
+endif()
+
+if (GPU_MALI)
+message("USE_GPU_MALI")
+add_compile_definitions(USE_GPU_MALI=1)
+endif()
+
+if (CPU_ARM)
+message("USE_CPU_ARM")
+add_compile_definitions(USE_CPU_ARM=1)
+endif()
+
+
 # https://docs.openvino.ai/latest/openvino_docs_OV_UG_Integrate_OV_with_your_application.html#doxid-openvino-docs-o-v-u-g-integrate-o-v-with-your-application
 
 # message(${OpenVINO_SOURCE_DIR})
@@ -27,11 +55,14 @@ message(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/library/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/inc)
 include_directories(${CMAKE_SOURCE_DIR}/library/ArmCL)
-# include_directories(${CMAKE_SOURCE_DIR}/components/OpenVINO/runtime/include)
+include_directories(${CMAKE_SOURCE_DIR}/module/args/)
 
 set(CMAKE_INSTALL_RPATH "lib")
 
-# add_subdirectory(module/SimpleRKNN/)
+
+option(ARGS_BUILD_EXAMPLE "Build example" OFF)
+option(ARGS_BUILD_UNITTESTS "Build unittests" OFF)
+add_subdirectory(module/args/)
 
 
 add_executable(${PROJ_NAME}
@@ -47,8 +78,10 @@ add_executable(${PROJ_NAME}
 		lib/src/compose/neon.cpp
 		lib/src/compose/rknn.cpp
 
-
+		lib/src/argument/parser.cpp
 )
+
+target_link_libraries(${PROJ_NAME} args)
 
 # if (DEFINE_OS STREQUAL "aarch64")
 	# OpenVINO
