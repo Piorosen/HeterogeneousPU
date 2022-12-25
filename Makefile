@@ -43,7 +43,8 @@ build:
 configure: rknn 
 	# cp module/ArmCL/build/*.a link/
 	# cp module/ArmCL/build/*.so link/
-
+	cp module/libedgetpu/throttled/aarch64/*.so.* link/
+	cp module/libedgetpu/tflite_prebuilt/aarch64/*.so link/
 	cp module/SimpleRKNN/bin/*.a link/
 	cp module/SimpleRKNN/bin/*.so link/
 	# cd module/OpenVINO/build && make install
@@ -71,6 +72,39 @@ opencv:
 
 	echo "export OpenCV_DIR=${DIR}/link/opencv" >> ~/.bashrc
 	source ~/.bashrc
+
+
+tensorflow:
+	export ARMCC_PREFIX=${HOME}/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- && \
+	export ARMCC_FLAGS="-funsafe-math-optimizations" && \
+	cmake ../tensorflow_src/tensorflow/lite \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_C_COMPILER=${ARMCC_PREFIX}gcc \
+		-DCMAKE_CXX_COMPILER=${ARMCC_PREFIX}g++ \
+		-DCMAKE_C_FLAGS="${ARMCC_FLAGS}" \
+		-DCMAKE_CXX_FLAGS="${ARMCC_FLAGS}" \
+		-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+		-DCMAKE_SYSTEM_NAME=Linux \
+		-DCMAKE_SYSTEM_PROCESSOR=armv8 \
+		-DTFLITE_ENABLE_INSTALL=ON \
+		-DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON \
+		-Dabsl_DIR=$INS_PATH/lib/cmake/absl \
+		-DEigen3_DIR=$INS_PATH/share/eigen3/cmake \
+		-DFlatbuffers_DIR=$INS_PATH/lib/cmake/flatbuffers \
+		-DNEON_2_SSE_DIR=$INS_PATH/lib/cmake/NEON_2_SSE \
+		-Dcpuinfo_DIR=$INS_PATH/share/cpuinfo \
+		-Druy_DIR=$INS_PATH/lib/cmake/ruy \
+		--build .
+
+		cmake -DCMAKE_C_COMPILER=${ARMCC_PREFIX}gcc \
+			-DCMAKE_CXX_COMPILER=${ARMCC_PREFIX}g++ \
+			-DCMAKE_C_FLAGS="${ARMCC_FLAGS}" \
+			-DCMAKE_CXX_FLAGS="${ARMCC_FLAGS}" \
+			-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+			-DCMAKE_SYSTEM_NAME=Linux \
+			-DCMAKE_SYSTEM_PROCESSOR=armv8 \
+			-DCMAKE_INSTALL_PREFIX=$HOME/tflitebuild \
+			../tensorflow_src/tensorflow/lite
 
 openvino:
 	if ! [ -d "module/OpenVINO/build" ]; then \

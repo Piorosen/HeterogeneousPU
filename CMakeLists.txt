@@ -56,6 +56,10 @@ include_directories(${CMAKE_SOURCE_DIR}/library/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/inc)
 include_directories(${CMAKE_SOURCE_DIR}/library/ArmCL)
 include_directories(${CMAKE_SOURCE_DIR}/module/args/)
+include_directories(${CMAKE_SOURCE_DIR}/module/libedgetpu/)
+include_directories(${CMAKE_SOURCE_DIR}/module/)
+include_directories(${CMAKE_SOURCE_DIR}/module/abseil-cpp)
+include_directories(${CMAKE_SOURCE_DIR}/module/flatbuffers/include)
 
 set(CMAKE_INSTALL_RPATH "lib")
 
@@ -82,6 +86,7 @@ add_executable(${PROJ_NAME}
 )
 
 target_link_libraries(${PROJ_NAME} args)
+# target_link_libraries(${PROJ_NAME} edgetpu)
 
 # if (DEFINE_OS STREQUAL "aarch64")
 	# OpenVINO

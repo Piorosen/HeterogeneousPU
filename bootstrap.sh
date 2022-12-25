@@ -46,6 +46,38 @@ if [ $ARCH == "aarch64" ]; then
         sudo tar -zxvf components/cmake-3.24.1-linux-aarch64.tar.gz --strip 1 -C /usr && \
         rm -rf components/cmake-3.24.1-linux-aarch64.tar.gz
     
+    sudo apt install libabsl-dev libflatbuffers-dev
+
+    # wget https://github.com/koenvervloesem/bazel-on-arm/releases/download/v4.2.2/bazel-4.2.2
+    # chmod +x bazel-4.2.2
+
+    # https://coral.ai/docs/accelerator/get-started/
+    # echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
+    # curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+    # sudo apt-get update
+    # sudo apt-get install -y libedgetpu1-std
+    # sudo apt-get install libedgetpu1-max
+
+    # bazel install 
+    git clone https://github.com/koenvervloesem/bazel-on-arm
+    cd bazel-on-arm
+    sudo make requirements
+    make bazel 
+    cd ..
+    # sudo make install
+
+
+    # install vcpkg 
+    sudo apt install -y bison meson
+
+    git clone https://github.com/microsoft/vcpkg
+    ./vcpkg/bootstrap-vcpkg.sh
+    cd vcpkg
+    export VCPKG_FORCE_SYSTEM_BINARIES=1
+    ./vcpkg install opencv4
+    # # tensorflow lite build
+    # git clone https://github.com/tensorflow/tensorflow.git
+    # ./tensorflow/lite/tools/make/download_dependencies.sh
     # pip3 install --upgrade pip3
     # pip install setuptools openvino-dev
 
