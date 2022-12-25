@@ -10,3 +10,12 @@
 [submodule "module/args"]
 	path = module/args
 	url = https://github.com/Taywee/args
+[submodule "module/tensorflow"]
+	path = module/tensorflow
+	url = https://github.com/tensorflow/tensorflow
+[submodule "module/flatbuffers"]
+	path = module/flatbuffers
+	url = https://github.com/google/flatbuffers
+[submodule "module/abseil-cpp"]
+	path = module/abseil-cpp
+	url = https://github.com/abseil/abseil-cpp
