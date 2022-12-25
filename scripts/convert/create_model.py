@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 if __name__ == '__main__':
-    model = tf.keras.applications.vgg16.VGG16(
+    model = tf.keras.applications.resnet50.ResNet50(
         include_top=True,
         weights='imagenet',
         input_tensor=None,
@@ -11,6 +11,6 @@ if __name__ == '__main__':
         classes=1000,
     )
     model.summary()
-    model.save("vgg16.h5")
+    model.save("resnet50.h5")
     
     print('done')
