@@ -56,8 +56,8 @@ include_directories(${CMAKE_SOURCE_DIR}/library/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/inc)
 include_directories(${CMAKE_SOURCE_DIR}/library/ArmCL)
 include_directories(${CMAKE_SOURCE_DIR}/module/args/)
-include_directories(${CMAKE_SOURCE_DIR}/module/libedgetpu/)
-include_directories(${CMAKE_SOURCE_DIR}/module/)
+include_directories(${CMAKE_SOURCE_DIR}/module/libedgetpu)
+include_directories(${CMAKE_SOURCE_DIR}/module/tensorflow)
 include_directories(${CMAKE_SOURCE_DIR}/module/abseil-cpp)
 include_directories(${CMAKE_SOURCE_DIR}/module/flatbuffers/include)
 
@@ -71,31 +71,34 @@ add_subdirectory(module/args/)
 
 add_executable(${PROJ_NAME}
         main.cpp
-        library/ArmCL/utils/GraphUtils.cpp 
-        library/ArmCL/utils/Utils.cpp
-		lib/src/stb_image.cpp
 
-		lib/src/compose/manager.cpp
+		# lib/src/compose/edgetpu.cpp
 
-		lib/src/compose/mali.cpp
-		lib/src/compose/myriad.cpp
-		lib/src/compose/neon.cpp
-		lib/src/compose/rknn.cpp
+        # library/ArmCL/utils/GraphUtils.cpp 
+        # library/ArmCL/utils/Utils.cpp
+		# lib/src/stb_image.cpp
 
-		lib/src/argument/parser.cpp
+		# lib/src/compose/manager.cpp
+
+		# lib/src/compose/mali.cpp
+		# lib/src/compose/myriad.cpp
+		# lib/src/compose/neon.cpp
+		# lib/src/compose/rknn.cpp
+
+		# lib/src/argument/parser.cpp
 )
 
 target_link_libraries(${PROJ_NAME} args)
-# target_link_libraries(${PROJ_NAME} edgetpu)
+target_link_libraries(${PROJ_NAME} flatbuffers tensorflowlite tensorflowlite_c edgetpu)
 
 # if (DEFINE_OS STREQUAL "aarch64")
 	# OpenVINO
 target_link_libraries(${PROJ_NAME} openvino::runtime)
 # ArmCL
 target_link_libraries(${PROJ_NAME} 
-	arm_compute_core
-	arm_compute_graph
-	arm_compute
+	# arm_compute_core
+	# arm_compute_graph
+	# arm_compute
 	pthread
 )
 

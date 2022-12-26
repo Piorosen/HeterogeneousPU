@@ -41,10 +41,11 @@ build:
 		
 
 configure: rknn 
-	# cp module/ArmCL/build/*.a link/
-	# cp module/ArmCL/build/*.so link/
-	cp module/libedgetpu/throttled/aarch64/*.so.* link/
-	cp module/libedgetpu/tflite_prebuilt/aarch64/*.so link/
+	cp module/ArmCL/build/*.a link/
+	cp module/ArmCL/build/*.so link/
+	cp module/flatbuffers/bin/lib/*.a link/
+	cp module/libedgetpu/throttled/aarch64/libedgetpu.so.1.0 link/libedgetpu.so
+	sudo cp module/libedgetpu/tflite_prebuilt/*.so link/
 	cp module/SimpleRKNN/bin/*.a link/
 	cp module/SimpleRKNN/bin/*.so link/
 	# cd module/OpenVINO/build && make install

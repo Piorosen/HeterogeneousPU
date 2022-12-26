@@ -58,13 +58,28 @@ if [ $ARCH == "aarch64" ]; then
     # sudo apt-get install -y libedgetpu1-std
     # sudo apt-get install libedgetpu1-max
 
-    # bazel install 
+    # bazel install bazel-3.7.2
     git clone https://github.com/koenvervloesem/bazel-on-arm
     cd bazel-on-arm
     sudo make requirements
     make bazel 
+    sudo make install
     cd ..
-    # sudo make install
+
+    # build tensorflow
+    sudo apt install bazel-3.7.2
+    cd module/tensorflow
+    git checkout a4dfb8d1a71385bd6d122e4f27f86dcebb96712d -b tf2.5
+    # sudo apt install python3.8 python3.8-dev
+    # bazel build --config=elinux_aarch64 -c opt //tensorflow/lite/c:libtensorflowlite_c.so
+    # bazel build --config=elinux_aarch64 -c opt //tensorflow/lite:libtensorflowlite.so
+    # sudo make install 
+
+    cd module/flatbuffers && \
+    git checkout 6df40a2471737b27271bdd9b900ab5f3aec746c7 -b tf1.12  && \
+    mkdir build && cd build  && \
+    cmake -G Ninja -DCMAKE_INSTALL_PREFIX=$(pwd)/../bin -DCMAKE_BUILD_TYPE=Release ..  && \
+    ninja install 
 
 
     # install vcpkg 
