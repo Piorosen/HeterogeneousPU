@@ -50,8 +50,6 @@ configure: rknn
 	cp module/SimpleRKNN/bin/*.so link/
 	# cd module/OpenVINO/build && make install
 	
-	
-
 opencv:
 	if ! [ -d "module/OpenCV/build" ]; then \
 		mkdir module/OpenCV/build; \
