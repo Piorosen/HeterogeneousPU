@@ -15,6 +15,7 @@
 > 2. GPU : Mali using OpenCL in ArmCL
 > 3. NPU : Rockhip RK3399Pro using RKNN
 > 4. NPU : Intel Neural Compute Stick 2 using OpenVINO
+> 5. TPU : Google Edge Coral USB Accelerator using libedgetpu based Tensorflow Lite
 
 # How to build?
 
