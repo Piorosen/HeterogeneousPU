@@ -9,12 +9,17 @@ OPTION(GPU_MALI "use mali gpu" OFF)
 OPTION(NPU_MYRIAD "use myriad npu" ON)
 OPTION(NPU_RKNN "use rknn npu" ON)
 OPTION(CPU_ARM "use arm cpu" OFF)
+OPTION(NPU_CORAL "use coral npu" OFF)
 
 
 
 if (NPU_MYRIAD)
 message("USE_NPU_MYRIAD")
 add_compile_definitions(USE_NPU_MYRIAD=1)
+message("FOUND ARCHITECTURE : AARCH64")
+find_package(OpenVINO REQUIRED)
+find_package(InferenceEngine REQUIRED)
+find_package(ngraph REQUIRED)
 endif()
 
 if (NPU_RKNN)
@@ -32,21 +37,16 @@ message("USE_CPU_ARM")
 add_compile_definitions(USE_CPU_ARM=1)
 endif()
 
+if (NPU_CORAL)
+message("USE_NPU_CORAL")
+add_compile_definitions(USE_NPU_CORAL=1)
+endif()
+
 
 # https://docs.openvino.ai/latest/openvino_docs_OV_UG_Integrate_OV_with_your_application.html#doxid-openvino-docs-o-v-u-g-integrate-o-v-with-your-application
 
 # message(${OpenVINO_SOURCE_DIR})
 # EXECUTE_PROCESS (COMMAND uname -m OUTPUT_VARIABLE DEFINE_OS OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_STRIP_TRAILING_WHITESPACE) 
-
-# if (${DEFINE_OS} STREQUAL "aarch64")
-message("FOUND ARCHITECTURE : AARCH64")
-find_package(OpenVINO REQUIRED)
-find_package(InferenceEngine REQUIRED)
-find_package(ngraph REQUIRED)
-
-# else()
-	# message("FOUND ARCHITECTURE : INTEL")
-# endif()
 
 link_directories(${CMAKE_SOURCE_DIR}/link)
 
@@ -89,27 +89,29 @@ add_executable(${PROJ_NAME}
 )
 
 target_link_libraries(${PROJ_NAME} args)
-target_link_libraries(${PROJ_NAME} flatbuffers tensorflowlite tensorflowlite_c edgetpu)
 
-# if (DEFINE_OS STREQUAL "aarch64")
-	# OpenVINO
+if (NPU_MYRIAD)
 target_link_libraries(${PROJ_NAME} openvino::runtime)
-# ArmCL
-target_link_libraries(${PROJ_NAME} 
-	# arm_compute_core
-	# arm_compute_graph
-	# arm_compute
-	pthread
-)
-
+endif()
+if (NPU_RKNN)
 # RKNN
-	# if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 target_link_libraries(${PROJ_NAME}
 	SimpleRKNN
 	rknn_api
 )
-	# else()
-# endif()
+endif()
+if (CPU_ARM OR GPU_MALI)
+# ArmCL
+target_link_libraries(${PROJ_NAME} 
+	arm_compute_core
+	arm_compute_graph
+	arm_compute
+	pthread
+)
+endif()
+if (NPU_CORAL)
+target_link_libraries(${PROJ_NAME} flatbuffers tensorflowlite tensorflowlite_c edgetpu)
+endif()
 
 # install target and libraries
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/bin)
