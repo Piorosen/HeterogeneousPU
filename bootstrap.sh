@@ -46,7 +46,7 @@ if [ $ARCH == "aarch64" ]; then
         sudo tar -zxvf components/cmake-3.24.1-linux-aarch64.tar.gz --strip 1 -C /usr && \
         rm -rf components/cmake-3.24.1-linux-aarch64.tar.gz
     
-    sudo apt install libabsl-dev libflatbuffers-dev
+    # sudo apt install libabsl-dev libflatbuffers-dev
 
     # wget https://github.com/koenvervloesem/bazel-on-arm/releases/download/v4.2.2/bazel-4.2.2
     # chmod +x bazel-4.2.2

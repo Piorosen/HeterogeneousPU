@@ -26,7 +26,12 @@ test:
 
 all: configure build
 	echo "haha!"
-	
+
+clean:
+	cd build && \
+	rm -rf .cmake CMakeFiles .ninja* cmake_install.cmake CMakeCache.txt CPack* install_manifest.txt chacha
+
+
 build:
 	if ! [ -d "build" ]; then \
 		mkdir build; \
@@ -164,14 +169,14 @@ originarmcl:
 
 
 
-clean:
-	rm -rf module/OpenCV/build
-	rm -rf link/OpenCV
+# clean:
+# 	rm -rf module/OpenCV/build
+# 	rm -rf link/OpenCV
 	
-	rm -rf module/SimpleRKNN/build
-	rm -rf module/SimpleRKNN/bin
+# 	rm -rf module/SimpleRKNN/build
+# 	rm -rf module/SimpleRKNN/bin
 
-	rm -rf module/ArmCL/build
-	rm -rf module/libArmCL/build
-	rm -rf link/*.a link/*.so build bin
-	rm -rf $(shell $$HOME)/intel/openvino_2022
+# 	rm -rf module/ArmCL/build
+# 	rm -rf module/libArmCL/build
+# 	rm -rf link/*.a link/*.so build bin
+# 	rm -rf $(shell $$HOME)/intel/openvino_2022

@@ -5,13 +5,11 @@ project(${PROJ_NAME})
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARM_COMPUTE_CL")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -DARM_COMPUTE_CL")
 
-OPTION(GPU_MALI "use mali gpu" OFF)
-OPTION(NPU_MYRIAD "use myriad npu" ON)
-OPTION(NPU_RKNN "use rknn npu" ON)
-OPTION(CPU_ARM "use arm cpu" OFF)
-OPTION(NPU_CORAL "use coral npu" OFF)
-
-
+SET(GPU_MALI 	false)
+SET(CPU_ARM 	false)
+SET(NPU_MYRIAD 	false)
+SET(NPU_RKNN 	false)
+SET(NPU_CORAL 	true)
 
 if (NPU_MYRIAD)
 message("USE_NPU_MYRIAD")
@@ -21,27 +19,6 @@ find_package(OpenVINO REQUIRED)
 find_package(InferenceEngine REQUIRED)
 find_package(ngraph REQUIRED)
 endif()
-
-if (NPU_RKNN)
-message("USE_NPU_RKNN")
-add_compile_definitions(USE_NPU_RKNN=1)
-endif()
-
-if (GPU_MALI)
-message("USE_GPU_MALI")
-add_compile_definitions(USE_GPU_MALI=1)
-endif()
-
-if (CPU_ARM)
-message("USE_CPU_ARM")
-add_compile_definitions(USE_CPU_ARM=1)
-endif()
-
-if (NPU_CORAL)
-message("USE_NPU_CORAL")
-add_compile_definitions(USE_NPU_CORAL=1)
-endif()
-
 
 # https://docs.openvino.ai/latest/openvino_docs_OV_UG_Integrate_OV_with_your_application.html#doxid-openvino-docs-o-v-u-g-integrate-o-v-with-your-application
 
@@ -68,27 +45,51 @@ option(ARGS_BUILD_EXAMPLE "Build example" OFF)
 option(ARGS_BUILD_UNITTESTS "Build unittests" OFF)
 add_subdirectory(module/args/)
 
+set(SOURCE_FILES main.cpp 
+				 lib/src/compose/manager.cpp)
+
+
+if (NPU_MYRIAD)
+	SET(SOURCE_FILES ${SOURCE_FILES} lib/src/compose/myriad.cpp)
+endif()
+if (NPU_RKNN)
+message("USE_NPU_RKNN")
+add_compile_definitions(USE_NPU_RKNN=1)
+SET(SOURCE_FILES ${SOURCE_FILES} lib/src/compose/rknn.cpp)
+endif()
+
+if (GPU_MALI OR CPU_ARM)
+	SET(SOURCE_FILES ${SOURCE_FILES} library/ArmCL/utils/GraphUtils.cpp 
+									 library/ArmCL/utils/Utils.cpp)
+endif()
+
+if (GPU_MALI)
+	message("USE_GPU_MALI")
+	add_compile_definitions(USE_GPU_MALI=1)
+	SET(SOURCE_FILES ${SOURCE_FILES} lib/src/compose/mali.cpp)
+endif()
+if (CPU_ARM)
+	message("USE_CPU_ARM")
+	add_compile_definitions(USE_CPU_ARM=1)
+	SET(SOURCE_FILES ${SOURCE_FILES} lib/src/compose/neon.cpp)
+endif()
+if (NPU_CORAL)
+	message("USE_NPU_CORAL")
+	add_compile_definitions(USE_NPU_CORAL=1)
+	SET(SOURCE_FILES ${SOURCE_FILES} lib/src/compose/edgetpu.cpp)
+endif()
+
+message("Sources : " ${SOURCE_FILES})
 
 add_executable(${PROJ_NAME}
-        main.cpp
+        ${SOURCE_FILES}
 
-		# lib/src/compose/edgetpu.cpp
-
-        # library/ArmCL/utils/GraphUtils.cpp 
-        # library/ArmCL/utils/Utils.cpp
-		# lib/src/stb_image.cpp
-
-		# lib/src/compose/manager.cpp
-
-		# lib/src/compose/mali.cpp
-		# lib/src/compose/myriad.cpp
-		# lib/src/compose/neon.cpp
-		# lib/src/compose/rknn.cpp
-
-		# lib/src/argument/parser.cpp
+		lib/src/stb_image.cpp
+		lib/src/argument/parser.cpp
 )
 
-target_link_libraries(${PROJ_NAME} args)
+
+target_link_libraries(${PROJ_NAME} args pthread)
 
 if (NPU_MYRIAD)
 target_link_libraries(${PROJ_NAME} openvino::runtime)
@@ -106,7 +107,6 @@ target_link_libraries(${PROJ_NAME}
 	arm_compute_core
 	arm_compute_graph
 	arm_compute
-	pthread
 )
 endif()
 if (NPU_CORAL)

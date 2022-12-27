@@ -10,7 +10,8 @@ enum engine {
     myriad,
     neon,
     rknn,
-    mali
+    mali,
+    coral
 };
 
 class manager {
