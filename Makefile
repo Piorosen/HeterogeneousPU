@@ -53,6 +53,7 @@ configure: rknn
 	sudo cp module/libedgetpu/tflite_prebuilt/*.so link/
 	cp module/SimpleRKNN/bin/*.a link/
 	cp module/SimpleRKNN/bin/*.so link/
+	cp module/armnn_prebuilt/*.so link/
 	# cd module/OpenVINO/build && make install
 	
 opencv:

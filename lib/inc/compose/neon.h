@@ -6,7 +6,6 @@
 #include <support/ToolchainSupport.h>
 #include <utils/GraphUtils.h>
 
-
 using namespace arm_compute;
 using namespace arm_compute::utils;
 using namespace arm_compute::graph::frontend;
