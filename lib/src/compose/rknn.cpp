@@ -10,13 +10,16 @@ std::string rknn_engine::get_name() const {
 }
 
 void rknn_engine::init(const std::string file, compose::model_info info) { 
+    #ifdef USE_NPU_RKNN
     this->info = info;
     rknn::run_loop();
     lib.load_model("./" + file + "/rknn/" + file + ".rknn");
     // lib.load_model("./mobilenet_v1.rknn");
+    #endif
 }
 
 void rknn_engine::inference(const std::string image) {
+    #ifdef USE_NPU_RKNN
     rknn::tensor_format layout;
     switch (info.layout) { 
         case compose::data_layout::nchw:
@@ -38,8 +41,11 @@ void rknn_engine::inference(const std::string image) {
     });
 
     while(!flag);
+    #endif
 }
 
 void rknn_engine::deinit() { 
+    #ifdef USE_NPU_RKNN
     rknn::close_loop();
+    #endif
 }

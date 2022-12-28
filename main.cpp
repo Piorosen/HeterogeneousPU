@@ -9,21 +9,31 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
+    auto e = compose::manager::instance()->inference_engine();
+    std::cout << e.size() << "\n";
+    for (const auto& item : e) { 
+      cout << item->get_name() << "\n";
+    }
 
+    compose::model_info d;
+    d.batch = 1;
+    d.channel = 3;
+    d.height = 224;
+    d.width = 224;
+    d.layout = compose::data_layout::nhwc;
+    // printf("[ %s] ", argv[1]);
+    e[0]->init("test.tflite", d);
+    auto start = high_resolution_clock::now();
 
-  
-    // auto e = compose::manager::instance()->inference_engine();
-    // for (const auto& item : e) { 
-    //   cout << item->get_name() << "\n";
-    // }
+    for (int i = 0; i < 10; i++) { 
+      e[0]->inference("00374.jpg");
+    }
+
+    auto end = high_resolution_clock::now();
+    std::cout << "\n" << (end - start).count() << "ns\n";
+    e[0]->deinit();
+
     // return 0;
-
-    // compose::model_info d;
-    // d.batch = 1;
-    // d.channel = 3;
-    // d.height = 224;
-    // d.width = 224;
-    // d.layout = compose::data_layout::nhwc;
 
     // if (e.size() == 0) { 
     //     printf("not found inference engine");

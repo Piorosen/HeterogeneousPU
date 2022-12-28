@@ -136,19 +136,21 @@ ArmnnNetworkExecutor<Tout>::ArmnnNetworkExecutor(std::string& modelPath,
     armnn::BackendOptions modelOptionCpu("CpuAcc", {{"FastMathEnabled", true}});
     optimizerOptions.m_ModelOptions.push_back(modelOptionCpu);
     /* enable reduce float32 to float16 optimization */
-    optimizerOptions.m_ReduceFp32ToFp16 = true;
-
+    optimizerOptions.m_ReduceFp32ToFp16 = false;
     armnnDelegate::DelegateOptions delegateOptions(preferredBackends, optimizerOptions);
-
-    /* create delegate object */
+    std::cout << "1\n";
+    // /* create delegate object */
     std::unique_ptr<TfLiteDelegate, decltype(&armnnDelegate::TfLiteArmnnDelegateDelete)>
                 theArmnnDelegate(armnnDelegate::TfLiteArmnnDelegateCreate(delegateOptions),
                                  armnnDelegate::TfLiteArmnnDelegateDelete);
-
+    std::cout << "\n2\n";
+    
     /* Register the delegate file */
     m_interpreter->ModifyGraphWithDelegate(std::move(theArmnnDelegate));
-    m_profiling.ProfilingStopAndPrintUs("Create and load ArmNN Delegate");
 
+    std::cout << "3\n";
+
+    m_profiling.ProfilingStopAndPrintUs("Create and load ArmNN Delegate");
 }
 
 template<typename Tout>
@@ -156,6 +158,7 @@ void ArmnnNetworkExecutor<Tout>::PrepareTensors(const void *inputData, const siz
 {
     size_t inputTensorSize = m_interpreter->input_tensor(0)->bytes;
     auto * inputTensorPtr = m_interpreter->input_tensor(0)->data.raw;
+    printf("%d ::: %d\n\n", inputTensorSize, dataBytes);
     assert(inputTensorSize >= dataBytes);
     if (inputTensorPtr != nullptr)
     {

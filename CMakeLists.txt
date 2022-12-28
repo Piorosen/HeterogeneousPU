@@ -9,7 +9,7 @@ SET(GPU_MALI 	false)
 SET(CPU_ARM 	true)
 SET(NPU_MYRIAD 	false)
 SET(NPU_RKNN 	false)
-SET(NPU_CORAL 	true)
+SET(NPU_CORAL 	false)
 
 if (NPU_MYRIAD)
 message("USE_NPU_MYRIAD")
@@ -31,7 +31,6 @@ link_directories(${CMAKE_SOURCE_DIR}/module/armnn_prebuilt)
 # library headers
 message(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/library/armnn)
-include_directories(${CMAKE_SOURCE_DIR}/library/armnn/armnn/utility)
 
 
 include_directories(${CMAKE_SOURCE_DIR}/library/)
@@ -113,10 +112,18 @@ target_link_libraries(${PROJ_NAME}
 	arm_compute_core
 	arm_compute_graph
 	arm_compute
+
 	armnn
 	armnnDelegate
 	armnnTfLiteParser
-	
+
+	armnnBasePipeServer
+	armnnDeserializer
+	protobuf-lite
+	protobuf
+	protoc
+	timelineDecoder
+	timelineDecoderJson
 )
 endif()
 if (NPU_CORAL)

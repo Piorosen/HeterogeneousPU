@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "armnn.h"
+#include <compose/extension/armnn.h>
 // # include "ImageUtils.hpp"
 
 namespace od
@@ -53,8 +53,9 @@ public:
      * @param[in] inferenceResult - inference results to be decoded.
      * @param[in] callback - a function to be called after successful inference results decoding.
      */
-    virtual void PostProcessing(common::InferenceResults<float>& inferenceResult,
-                                const std::function<void (int)>& callback);
+    virtual void PostProcessing(const std::function<void (int)>& callback);
+    // virtual void PostProcessing(common::InferenceResults<float>& inferenceResult,
+    //                             const std::function<void (int)>& callback);
 
 protected:
     std::unique_ptr<common::ArmnnNetworkExecutor<float>> m_executor;

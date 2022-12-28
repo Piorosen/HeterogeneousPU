@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-#include "ObjectDetection.h"
+#include <compose/extension/ObjectDetection.h>
 // #include "ImageUtils.hpp"
 
 namespace od
@@ -17,8 +17,7 @@ void ObjDetectionPipeline::Inference(unsigned char* processed, int width_height_
     m_executor->Run(processed, width_height_chan * size_type, result);
 }
 
-void ObjDetectionPipeline::PostProcessing(common::InferenceResults<float>& inferenceResult,
-        const std::function<void (int)>& callback)
+void ObjDetectionPipeline::PostProcessing(const std::function<void (int)>& callback)
 {
     // DetectedObjects detections = m_decoder->Decode(inferenceResult, m_inputImageSize,
     //                                        m_executor->GetImageAspectRatio(), {});
@@ -49,6 +48,5 @@ IPipelinePtr CreatePipeline(common::PipelineOptions& config)
     {
         throw std::invalid_argument("Unknown Model name: " + config.m_ModelName + " supplied by user.");
     }
-
 }
 }// namespace od

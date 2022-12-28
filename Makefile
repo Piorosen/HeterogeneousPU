@@ -40,7 +40,7 @@ build:
 	cd build && cmake .. -G Ninja \
 		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
 		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ \
-		-DCMAKE_BUILD_TYPE=Release
+		-DCMAKE_BUILD_TYPE=Debug
 		
 	cd build && ninja install
 		
@@ -53,7 +53,7 @@ configure: rknn
 	sudo cp module/libedgetpu/tflite_prebuilt/*.so link/
 	cp module/SimpleRKNN/bin/*.a link/
 	cp module/SimpleRKNN/bin/*.so link/
-	cp module/armnn_prebuilt/*.so link/
+	cp module/armnn_prebuilt/* link/
 	# cd module/OpenVINO/build && make install
 	
 opencv:
