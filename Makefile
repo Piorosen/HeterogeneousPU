@@ -24,6 +24,9 @@ test:
 	echo $(CXX)
 	echo $(shell $$HOME)
 
+run:
+	cd build && ./chacha && cd ..
+
 all: configure build
 	echo "haha!"
 

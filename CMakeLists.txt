@@ -2,8 +2,25 @@ cmake_minimum_required(VERSION 3.4.1)
 SET(PROJ_NAME chacha)
 project(${PROJ_NAME})
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARM_COMPUTE_CL")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -DARM_COMPUTE_CL")
+# Make the standard a requirement => prevent fallback to previous
+# supported standard
+set(CMAKE_C_STANDARD_REQUIRED       ON)
+set(CMAKE_CXX_STANDARD_REQUIRED     ON)
+
+# We want to pass standard C/C++ flags, without gnu extensions
+set(CMAKE_C_EXTENSIONS              OFF)
+set(CMAKE_CXX_EXTENSIONS            OFF)
+
+set(CMAKE_C_FLAGS_DEBUG         "-DDEBUG -O0 -g -fPIC")
+set(CMAKE_C_FLAGS_RELEASE       "-DNDEBUG -O3 -fPIC")
+
+set(CMAKE_CXX_FLAGS_DEBUG       "-DDEBUG -O0 -g -fPIC")
+set(CMAKE_CXX_FLAGS_RELEASE     "-DNDEBUG -O3 -fPIC")
+
+SET(USE_ARMNN_DELEGATE False CACHE BOOL "Use delegate file")
+
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARM_COMPUTE_CL")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -DARM_COMPUTE_CL")
 
 SET(GPU_MALI 	false)
 SET(CPU_ARM 	true)
@@ -25,12 +42,21 @@ endif()
 # message(${OpenVINO_SOURCE_DIR})
 # EXECUTE_PROCESS (COMMAND uname -m OUTPUT_VARIABLE DEFINE_OS OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_STRIP_TRAILING_WHITESPACE) 
 
+if (CPU_ARM OR GPU_MALI)
+	add_definitions(-DUSE_TF_LITE_DELEGATE)
+	include_directories(${CMAKE_SOURCE_DIR}/module/armnn/include)
+	include_directories(${CMAKE_SOURCE_DIR}/module/armnn/samples/common/include/Utils)
+	include_directories(${CMAKE_SOURCE_DIR}/module/armnn/samples/common/include/ArmnnUtils)
+	include_directories(${CMAKE_SOURCE_DIR}/module/armnn/delegate/include)
+	include_directories(${CMAKE_SOURCE_DIR}/module/armnn/delegate/src)
+	include_directories(${CMAKE_SOURCE_DIR}/module/armnn/profiling)
+endif()
+
 link_directories(${CMAKE_SOURCE_DIR}/link)
 link_directories(${CMAKE_SOURCE_DIR}/module/armnn_prebuilt)
 
 # library headers
 message(${CMAKE_SOURCE_DIR})
-include_directories(${CMAKE_SOURCE_DIR}/library/armnn)
 
 
 include_directories(${CMAKE_SOURCE_DIR}/library/)
@@ -109,6 +135,9 @@ endif()
 if (CPU_ARM OR GPU_MALI)
 # ArmCL
 target_link_libraries(${PROJ_NAME} 
+	# opencl
+	# mali
+
 	arm_compute_core
 	arm_compute_graph
 	arm_compute

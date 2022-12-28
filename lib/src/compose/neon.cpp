@@ -15,10 +15,11 @@ void neon_engine::init(const std::string file, compose::model_info info) {
        option.m_ModelFilePath = "test.tflite";
        option.m_ModelName  = "CHACHA";
        option.m_ProfilingEnabled = true;
-       // option.m_backends = {"GpuAcc"};
-       option.m_backends = {"CpuAcc", "CpuRef"};
+       option.m_backends = {"GpuAcc"};
+       // option.m_backends = {"CpuAcc", "CpuRef"};
        // CpuAcc, CpuRef, GpuAcc
        std::cout <<"1\n";
+       
        this->target = od::CreatePipeline(option);
        std::cout <<"2\n";
 }

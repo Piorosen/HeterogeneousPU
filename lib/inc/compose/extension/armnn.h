@@ -104,6 +104,14 @@ ArmnnNetworkExecutor<Tout>::ArmnnNetworkExecutor(std::string& modelPath,
                                            bool isProfilingEnabled):
                                            m_profiling(isProfilingEnabled)
 {
+
+    // armnn::IRuntime::CreationOptions options; // default options
+    // armnn::IRuntimePtr runtime = armnn::IRuntime::Create(options);
+    
+    // for (const auto d : e.GetSupportedBackends()){ 
+    //     std::cout << "Name : " << d.Get() << "\n";
+    // }
+
     m_profiling.ProfilingStart();
     armnn::OptimizerOptions optimizerOptions;
     m_model = tflite::FlatBufferModel::BuildFromFile(modelPath.c_str());
@@ -137,7 +145,7 @@ ArmnnNetworkExecutor<Tout>::ArmnnNetworkExecutor(std::string& modelPath,
     optimizerOptions.m_ModelOptions.push_back(modelOptionCpu);
     /* enable reduce float32 to float16 optimization */
     optimizerOptions.m_ReduceFp32ToFp16 = false;
-    armnnDelegate::DelegateOptions delegateOptions(preferredBackends, optimizerOptions);
+    armnnDelegate::DelegateOptions delegateOptions(preferredBackends);
     std::cout << "1\n";
     // /* create delegate object */
     std::unique_ptr<TfLiteDelegate, decltype(&armnnDelegate::TfLiteArmnnDelegateDelete)>
