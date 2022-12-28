@@ -6,7 +6,6 @@
 #pragma once
 
 #include "Types.hpp"
-
 #include "armnn/ArmNN.hpp"
 #include <armnn/Logging.hpp>
 #include <armnn_delegate.hpp>
