@@ -12,7 +12,7 @@ std::string mali_engine::get_name() const {
 
 void mali_engine::init(const std::string file, compose::model_info info) { 
     common::PipelineOptions option;
-    option.m_ModelFilePath = "test.tflite";
+    option.m_ModelFilePath = (file + "/tflite/" + file + ".tflite");
     option.m_ModelName  = "CHACHA";
     option.m_ProfilingEnabled = true;
        
