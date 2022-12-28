@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     d.width = 224;
     d.layout = compose::data_layout::nhwc;
     // printf("[ %s] ", argv[1]);
-    e[0]->init("test.tflite", d);
+    e[0]->init("ssd_mobilenet_v1int8.tflite", d);
     auto start = high_resolution_clock::now();
 
     for (int i = 0; i < 10; i++) { 

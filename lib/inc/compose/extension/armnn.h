@@ -138,15 +138,16 @@ ArmnnNetworkExecutor<Tout>::ArmnnNetworkExecutor(std::string& modelPath,
     m_profiling.ProfilingStart();
 
     /* enable fast math optimization */
-    armnn::BackendOptions modelOptionGpu("GpuAcc", {{"FastMathEnabled", true}});
+    armnn::BackendOptions modelOptionGpu("GpuAcc", {{"FastMathEnabled", false}});
     optimizerOptions.m_ModelOptions.push_back(modelOptionGpu);
 
-    armnn::BackendOptions modelOptionCpu("CpuAcc", {{"FastMathEnabled", true}});
+    armnn::BackendOptions modelOptionCpu("CpuAcc", {{"FastMathEnabled", false}});
     optimizerOptions.m_ModelOptions.push_back(modelOptionCpu);
     /* enable reduce float32 to float16 optimization */
     optimizerOptions.m_ReduceFp32ToFp16 = false;
-    armnnDelegate::DelegateOptions delegateOptions(preferredBackends);
-    std::cout << "1\n";
+
+    armnnDelegate::DelegateOptions delegateOptions(preferredBackends, modelOptionGpu);
+    // std::cout << "1\n";
     // /* create delegate object */
     std::unique_ptr<TfLiteDelegate, decltype(&armnnDelegate::TfLiteArmnnDelegateDelete)>
                 theArmnnDelegate(armnnDelegate::TfLiteArmnnDelegateCreate(delegateOptions),
