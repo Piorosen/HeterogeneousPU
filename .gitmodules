@@ -19,3 +19,6 @@
 [submodule "module/abseil-cpp"]
 	path = module/abseil-cpp
 	url = https://github.com/abseil/abseil-cpp
+[submodule "module/armnn"]
+	path = module/armnn
+	url = https://github.com/ARM-software/armnn
