@@ -145,7 +145,7 @@ ArmnnNetworkExecutor<Tout>::ArmnnNetworkExecutor(std::string& modelPath,
     /* enable reduce float32 to float16 optimization */
     optimizerOptions.m_ReduceFp32ToFp16 = false;
 
-    armnnDelegate::DelegateOptions delegateOptions(preferredBackends, modelOptionGpu);
+    armnnDelegate::DelegateOptions delegateOptions(preferredBackends, optimizerOptions);
     // std::cout << "1\n";
     // /* create delegate object */
     std::unique_ptr<TfLiteDelegate, decltype(&armnnDelegate::TfLiteArmnnDelegateDelete)>

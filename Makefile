@@ -43,9 +43,9 @@ build:
 	cd build && cmake .. -G Ninja \
 		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
 		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ \
-		-DCMAKE_BUILD_TYPE=Debug
+		-DCMAKE_BUILD_TYPE=Release
 		
-	cd build && ninja install
+	cd build && ninja
 		
 
 configure: rknn 
