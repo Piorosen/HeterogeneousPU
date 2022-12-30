@@ -2,20 +2,20 @@ cmake_minimum_required(VERSION 3.4.1)
 SET(PROJ_NAME chacha)
 project(${PROJ_NAME})
 
-# Make the standard a requirement => prevent fallback to previous
-# supported standard
-set(CMAKE_C_STANDARD_REQUIRED       ON)
-set(CMAKE_CXX_STANDARD_REQUIRED     ON)
+# # Make the standard a requirement => prevent fallback to previous
+# # supported standard
+# set(CMAKE_C_STANDARD_REQUIRED       ON)
+# set(CMAKE_CXX_STANDARD_REQUIRED     ON)
 
-# We want to pass standard C/C++ flags, without gnu extensions
-set(CMAKE_C_EXTENSIONS              OFF)
-set(CMAKE_CXX_EXTENSIONS            OFF)
+# # We want to pass standard C/C++ flags, without gnu extensions
+# set(CMAKE_C_EXTENSIONS              OFF)
+# set(CMAKE_CXX_EXTENSIONS            OFF)
 
-set(CMAKE_C_FLAGS_DEBUG         "-DDEBUG -O0 -g -fPIC")
-set(CMAKE_C_FLAGS_RELEASE       "-DNDEBUG -O3 -fPIC")
+# set(CMAKE_C_FLAGS_DEBUG         "-DDEBUG -O0 -g -fPIC")
+# set(CMAKE_C_FLAGS_RELEASE       "-DNDEBUG -O3 -fPIC")
 
-set(CMAKE_CXX_FLAGS_DEBUG       "-DDEBUG -O0 -g -fPIC")
-set(CMAKE_CXX_FLAGS_RELEASE     "-DNDEBUG -O3 -fPIC")
+# set(CMAKE_CXX_FLAGS_DEBUG       "-DDEBUG -O0 -g -fPIC")
+# set(CMAKE_CXX_FLAGS_RELEASE     "-DNDEBUG -O3 -fPIC")
 
 SET(USE_ARMNN_DELEGATE False CACHE BOOL "Use delegate file")
 
@@ -24,9 +24,9 @@ SET(USE_ARMNN_DELEGATE False CACHE BOOL "Use delegate file")
 
 SET(GPU_MALI 	false)
 SET(CPU_ARM 	true)
-SET(NPU_MYRIAD 	false)
-SET(NPU_RKNN 	false)
-SET(NPU_CORAL 	false)
+SET(NPU_MYRIAD 	true)
+SET(NPU_RKNN 	true)
+SET(NPU_CORAL 	true)
 
 if (NPU_MYRIAD)
 message("USE_NPU_MYRIAD")
@@ -117,6 +117,10 @@ add_executable(${PROJ_NAME}
 
 		lib/src/stb_image.cpp
 		lib/src/argument/parser.cpp
+
+		lib/src/scheduler/efts.cpp
+		lib/src/scheduler/fcfs.cpp
+		lib/src/scheduler/scheduler.cpp
 )
 
 

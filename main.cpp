@@ -1,37 +1,43 @@
-#include <iostream>
-#include <compose/manager.h>
-#include <chrono>
-#include <thread>
-#include <unistd.h>
+#include <scheduler/scheduler.h>
 
-using namespace std::chrono;
-using namespace std;
+// #include <iostream>
+// #include <compose/manager.h>
+// #include <chrono>
+// #include <thread>
+// #include <unistd.h>
+
+// using namespace std::chrono;
+// using namespace std;
 
 int main(int argc, char **argv)
 {
-    auto e = compose::manager::instance()->inference_engine();
-    std::cout << e.size() << "\n";
-    for (const auto& item : e) { 
-      cout << item->get_name() << "\n";
-    }
+    auto eft = scheduler::instance()->eft_scheduler();
+    
+    
 
-    compose::model_info d;
-    d.batch = 1;
-    d.channel = 3;
-    d.height = 224;
-    d.width = 224;
-    d.layout = compose::data_layout::nhwc;
-    // printf("[ %s] ", argv[1]);
-    e[0]->init("ssd_mobilenet_v1int8.tflite", d);
-    auto start = high_resolution_clock::now();
+    // auto e = compose::manager::instance()->inference_engine();
+    // std::cout << e.size() << "\n";
+    // for (const auto& item : e) { 
+    //   cout << item->get_name() << "\n";
+    // }
 
-    for (int i = 0; i < 10; i++) { 
-      e[0]->inference("00374.jpg");
-    }
+    // compose::model_info d;
+    // d.batch = 1;
+    // d.channel = 3;
+    // d.height = 224;
+    // d.width = 224;
+    // d.layout = compose::data_layout::nhwc;
+    // // printf("[ %s] ", argv[1]);
+    // e[0]->init("ssd_mobilenet_v1int8.tflite", d);
+    // auto start = high_resolution_clock::now();
 
-    auto end = high_resolution_clock::now();
-    std::cout << "\n" << (end - start).count() << "ns\n";
-    e[0]->deinit();
+    // for (int i = 0; i < 10; i++) { 
+    //   e[0]->inference("00374.jpg");
+    // }
+
+    // auto end = high_resolution_clock::now();
+    // std::cout << "\n" << (end - start).count() << "ns\n";
+    // e[0]->deinit();
 
     // return 0;
 
