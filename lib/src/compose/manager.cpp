@@ -57,3 +57,11 @@ std::vector<std::shared_ptr<iengine>> compose::manager::inference_engine() {
 #endif
     };
 }
+
+// std::shared_ptr<iengine> compose::manager::create(engine e) const { 
+//     switch (e) {
+//         case engine::
+
+//     }
+// }
+
