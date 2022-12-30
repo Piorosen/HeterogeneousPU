@@ -13,7 +13,7 @@ void rknn_engine::init(const std::string file, compose::model_info info) {
     #ifdef USE_NPU_RKNN
     this->info = info;
     rknn::run_loop();
-    lib.load_model("./" + file + "/rknn/" + file + ".rknn");
+    lib.load_model("./" + file + "/rknn/saved_model.rknn");
     // lib.load_model("./mobilenet_v1.rknn");
     #endif
 }

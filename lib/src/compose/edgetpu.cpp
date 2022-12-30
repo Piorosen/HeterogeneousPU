@@ -26,7 +26,7 @@ void edgetpu_engine::init(const std::string file, compose::model_info info) {
     // }
 
     // Load model.
-    auto model = tflite::FlatBufferModel::BuildFromFile((file + "/tflite/" + file + ".tflite").c_str());
+    auto model = tflite::FlatBufferModel::BuildFromFile(("./" + file + "/tflite/saved_model.tflite").c_str());
     if (!model) {
         std::cerr << "Cannot read model from " << file << std::endl;
         throw;

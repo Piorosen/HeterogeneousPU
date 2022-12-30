@@ -12,14 +12,14 @@ std::string neon_engine::get_name() const {
 
 void neon_engine::init(const std::string file, compose::model_info info) {
        common::PipelineOptions option;
-       option.m_ModelFilePath = (file + "/tflite/" + file + ".tflite");
+       option.m_ModelFilePath = ("./" + file + "/tflite/saved_model.tflite");
        option.m_ModelName  = "CHACHA";
        option.m_ProfilingEnabled = true;
        
        // option.m_backends = {"GpuAcc"};
        option.m_backends = {"CpuAcc", "CpuRef"};
        // CpuAcc, CpuRef, GpuAcc
-
+       printf("NEON!!\n\n\n");
        this->target = od::CreatePipeline(option);
 }
 

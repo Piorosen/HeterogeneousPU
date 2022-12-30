@@ -11,8 +11,8 @@ void ischeduler::init(const std::vector<std::string> models) {
     spdlog::info("ischeduler::init");
 
     auto s = high_resolution_clock::now();
-    for (const auto& e : engines) { 
-        for (const auto& m : models) { 
+    for (const auto& m : models) { 
+        for (const auto& e : engines) { 
             auto s1 = high_resolution_clock::now();
 
             data[e][m] = compose::manager::instance()->create(e);

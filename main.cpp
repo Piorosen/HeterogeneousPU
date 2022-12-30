@@ -3,36 +3,39 @@
 #include <iostream>
 #include <compose/manager.h>
 
+#include <chrono>
 #include <string>
 #include <vector>
 
-// using namespace std::chrono;
 using namespace std;
+using namespace std::chrono;
 
 int main(int argc, char **argv)
 {
-    auto eft = scheduler::instance()->efts_scheduler();
-    vector<string> models { "mobilenet", "resnet50", "resnet101", "vgg16", "vgg19" };
-    eft->init(models);
+    // auto eft = scheduler::instance()->efts_scheduler();
+    // vector<string> models { "vgg16","mobilenet", "resnet50", "resnet101",  "vgg19" };
+    // eft->init(models);
 
-    // auto e = compose::manager::instance()->inference_engine();
-    // compose::model_info d;
-    // d.batch = 1;
-    // d.channel = 3;
-    // d.height = 224;
-    // d.width = 224;
-    // d.layout = compose::data_layout::nhwc;
-    // // printf("[ %s] ", argv[1]);
-    // e[0]->init("ssd_mobilenet_v1int8.tflite", d);
-    // auto start = high_resolution_clock::now();
+    auto e = compose::manager::instance()->inference_engine();
+    printf("%d\n\n\n", e.size());
+    
+    compose::model_info d;
+    d.batch = 1;
+    d.channel = 3;
+    d.height = 224;
+    d.width = 224;
+    d.layout = compose::data_layout::nhwc;
+    // printf("[ %s] ", argv[1]);
+    e[0]->init("ssd_mobilenet_v1int8.tflite", d);
+    auto start = high_resolution_clock::now();
 
-    // for (int i = 0; i < 10; i++) { 
-    //   e[0]->inference("00374.jpg");
-    // }
+    for (int i = 0; i < 10; i++) { 
+      e[0]->inference("00374.jpg");
+    }
 
-    // auto end = high_resolution_clock::now();
-    // std::cout << "\n" << (end - start).count() << "ns\n";
-    // e[0]->deinit();
+    auto end = high_resolution_clock::now();
+    std::cout << "\n" << (end - start).count() << "ns\n";
+    e[0]->deinit();
 
     // return 0;
 

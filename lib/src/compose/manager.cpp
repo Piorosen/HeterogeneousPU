@@ -62,22 +62,27 @@ std::shared_ptr<iengine> compose::manager::create(compose::engine e) const {
     switch (e) {
 #ifdef USE_NPU_MYRIAD
         case compose::engine::myriad:
+        printf("create myriad\n");
             return std::make_shared<myriad_engine>();
 #endif
 #ifdef USE_GPU_MALI
         case compose::engine::mali:
+        printf("create mali\n");
             return std::make_shared<mali_engine>();
 #endif
 #ifdef USE_CPU_ARM
         case compose::engine::neon:
+        printf("create neon\n");
             return std::make_shared<neon_engine>();
 #endif
 #ifdef USE_NPU_RKNN
         case compose::engine::rknn:
+        printf("create rknn\n");
             return std::make_shared<rknn_engine>();
 #endif
 #ifdef USE_NPU_CORAL
         case compose::engine::coral:
+                printf("create coral\n");
             return std::make_shared<edgetpu_engine>();
 #endif
         default:
