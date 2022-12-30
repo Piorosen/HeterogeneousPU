@@ -1,26 +1,25 @@
 #include <scheduler/scheduler.h>
 
-// #include <iostream>
-// #include <compose/manager.h>
+#include <iostream>
+#include <compose/manager.h>
 // #include <chrono>
 // #include <thread>
 // #include <unistd.h>
 
 // using namespace std::chrono;
-// using namespace std;
+using namespace std;
 
 int main(int argc, char **argv)
 {
-    auto eft = scheduler::instance()->eft_scheduler();
+    auto eft = scheduler::instance()->efts_scheduler();
+    auto e = compose::manager::instance()->engine_list();
+    std::cout << eft->get_name() << "\n";
+    std::cout << e.size() << "\n";
     
-    
-
+    for (const auto& item : e) { 
+      cout << compose::manager::instance()->create(item)->get_name() << "\n";
+    }
     // auto e = compose::manager::instance()->inference_engine();
-    // std::cout << e.size() << "\n";
-    // for (const auto& item : e) { 
-    //   cout << item->get_name() << "\n";
-    // }
-
     // compose::model_info d;
     // d.batch = 1;
     // d.channel = 3;
