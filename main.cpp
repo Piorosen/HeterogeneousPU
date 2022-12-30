@@ -2,9 +2,9 @@
 
 #include <iostream>
 #include <compose/manager.h>
-// #include <chrono>
-// #include <thread>
-// #include <unistd.h>
+
+#include <string>
+#include <vector>
 
 // using namespace std::chrono;
 using namespace std;
@@ -12,13 +12,9 @@ using namespace std;
 int main(int argc, char **argv)
 {
     auto eft = scheduler::instance()->efts_scheduler();
-    auto e = compose::manager::instance()->engine_list();
-    std::cout << eft->get_name() << "\n";
-    std::cout << e.size() << "\n";
-    
-    for (const auto& item : e) { 
-      cout << compose::manager::instance()->create(item)->get_name() << "\n";
-    }
+    vector<string> models { "mobilenet", "resnet50", "resnet101", "vgg16", "vgg19" };
+    eft->init(models);
+
     // auto e = compose::manager::instance()->inference_engine();
     // compose::model_info d;
     // d.batch = 1;
