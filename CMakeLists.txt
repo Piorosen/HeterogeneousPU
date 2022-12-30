@@ -118,8 +118,10 @@ add_executable(${PROJ_NAME}
 		lib/src/stb_image.cpp
 		lib/src/argument/parser.cpp
 
+		lib/src/scheduler/sjf.cpp
 		lib/src/scheduler/efts.cpp
 		lib/src/scheduler/fcfs.cpp
+		lib/src/scheduler/srtf.cpp
 		lib/src/scheduler/scheduler.cpp
 )
 

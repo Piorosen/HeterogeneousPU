@@ -25,7 +25,7 @@ public:
 
     std::vector<std::shared_ptr<iengine>> inference_engine();
 
-    // std::shared_ptr<iengine> create(engine) const;
+    std::shared_ptr<iengine> create(engine) const;
 };
 
 }

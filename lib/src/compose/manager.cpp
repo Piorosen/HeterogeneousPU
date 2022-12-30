@@ -58,10 +58,30 @@ std::vector<std::shared_ptr<iengine>> compose::manager::inference_engine() {
     };
 }
 
-// std::shared_ptr<iengine> compose::manager::create(engine e) const { 
-//     switch (e) {
-//         case engine::
-
-//     }
-// }
+std::shared_ptr<iengine> compose::manager::create(compose::engine e) const { 
+    switch (e) {
+#ifdef USE_NPU_MYRIAD
+        case compose::engine::myriad:
+            return std::make_shared<myriad_engine>();
+#endif
+#ifdef USE_GPU_MALI
+        case compose::engine::mali:
+            return std::make_shared<mali_engine>();
+#endif
+#ifdef USE_CPU_ARM
+        case compose::engine::neon:
+            return std::make_shared<neon_engine>();
+#endif
+#ifdef USE_NPU_RKNN
+        case compose::engine::rknn:
+            return std::make_shared<rknn_engine>();
+#endif
+#ifdef USE_NPU_CORAL
+        case compose::engine::coral:
+            return std::make_shared<edgetpu_engine>();
+#endif
+        default:
+            throw "error!!!";
+    }
+}
 
