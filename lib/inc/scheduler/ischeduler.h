@@ -23,7 +23,7 @@ protected:
     }
 public:
     virtual std::string get_name() const = 0;
-    virtual void init(const std::vector<std::string> models);
+    virtual void init(const std::vector<std::string> models, int queue_size = 32);
     virtual void sequence(std::vector<std::string> model_idx) = 0;
     virtual void deinit() = 0;
 };

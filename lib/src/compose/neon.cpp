@@ -22,6 +22,7 @@ void neon_engine::init(const std::string file, compose::model_info info) {
        this->target = od::CreatePipeline(option);
        std::cout <<"2\n";
 }
+stbi_uc* data = nullptr;
 
 void neon_engine::inference(const std::string image) {
        this->is_inference = true;
@@ -30,7 +31,9 @@ void neon_engine::inference(const std::string image) {
        int width = 224, height = 224, c = 3;
        
        // stbi_uc* data = stbi_load(image.c_str(), &width, &height, &c, 0);
-       stbi_uc* data = (stbi_uc*)malloc(224 * 224 * 3 * 4);
+       if (data == nullptr) { 
+              data = (stbi_uc*)malloc(224 * 224 * 3 * 4);
+       }
        // cout << width << " " << height << " " << c << "\n";
        this->target->Inference((unsigned char*)data, width * height * c, sizeof(float), results);
        free(data);

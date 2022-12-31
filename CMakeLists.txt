@@ -126,6 +126,9 @@ add_executable(${PROJ_NAME}
 		lib/src/scheduler/efts.cpp
 		lib/src/scheduler/srtf.cpp
 		lib/src/scheduler/fcfs.cpp
+		lib/src/scheduler/random_sche.cpp
+		lib/src/scheduler/round_robine.cpp
+		
 		lib/src/scheduler/ischeduler.cpp
 		lib/src/scheduler/scheduler.cpp
 )

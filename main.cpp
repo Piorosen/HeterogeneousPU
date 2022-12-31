@@ -14,66 +14,11 @@ using namespace std::chrono;
 int main(int argc, char **argv)
 {
     auto eft = scheduler::instance()->fcfs_scheduler();
+    vector<string> models { "resnet50", "mobilenet"  };
     // vector<string> models { "mobilenet", "resnet50", "resnet101" };
-    vector<string> models { "mobilenet" };
-    eft->init(models);
-    std::random_device r{};
-    std::vector<std::string> seq;
-    for (int i = 0; i < 100; i++) { 
-        seq.push_back(models[r() % 1]);
-    }
+    eft->init(models, 32);
     printf("hahaha\n\n");
-    eft->sequence(seq);
-    // auto e = compose::manager::instance()->inference_engine();
-    // printf("%d\n", e.size());
-    
-    return 0;
-    // compose::model_info d;
-    // d.batch = 1;
-    // d.channel = 3;
-    // d.height = 224;
-    // d.width = 224;
-    // d.layout = compose::data_layout::nhwc;
-    // // printf("[ %s] ", argv[1]);
-    // e[0]->init("ssd_mobilenet_v1int8.tflite", d);
-    // auto start = high_resolution_clock::now();
+    eft->sequence(models);
 
-    // for (int i = 0; i < 10; i++) { 
-    //   e[0]->inference("00374.jpg");
-    // }
-
-    // return 0;
-
-    // if (e.size() == 0) { 
-    //     printf("not found inference engine");
-    //     return 0;
-    // }
-
-    // std::vector<std::thread> chacha;
-    // for (int i = 0; i < e.size() - 1; i++) {
-    //     int p = i;
-    //     chacha.push_back(std::thread([d, p, &e]() { 
-    //         std::cout << e[p]->get_name() << " : start\n";
-    //         e[p]->init("vgg16", d);
-    //         std::cout << e[p]->get_name() << " : end\n";
-            
-    //         for(;;){
-    //             auto start = high_resolution_clock::now();
-    //             e[p]->inference("./dog_224x224.jpg");
-    //             std::cout << e[p]->get_name() << " : " << (high_resolution_clock::now() - start).count() / 1000 << "us\n";
-    //         }
-    //     }));
-    // }
-
-    // std::cout << e[e.size() - 1]->get_name() << " : start\n";
-    // e[e.size() - 1]->init("vgg16", d);
-    // std::cout << e[e.size() - 1]->get_name() << " : end\n";
-
-    // for(;;){
-    //     auto start = high_resolution_clock::now();
-    //     e[e.size() - 1]->inference("./dog_224x224.jpg");
-    //     std::cout << e[e.size() - 1]->get_name() << " : " << (high_resolution_clock::now() - start).count() / 1000 << "us\n";
-    // }
-    
     return 0;
 }

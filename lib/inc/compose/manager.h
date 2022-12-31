@@ -3,9 +3,13 @@
 
 #include <vector>
 #include <memory>
+#include <string>
+
 #include <compose/iengine.h>
 
 namespace compose { 
+
+
 enum engine { 
     myriad,
     neon,
@@ -13,6 +17,8 @@ enum engine {
     mali,
     coral
 };
+
+std::string engine_to_string(engine e);
 
 class manager {
 public:

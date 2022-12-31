@@ -17,11 +17,26 @@
 #include <compose/edgetpu.h>
 #endif
 
+std::string compose::engine_to_string(compose::engine e) { 
+    switch (e) { 
+    case compose::myriad:
+        return "myriad";
+    case compose::neon:
+        return "neon ";
+    case compose::rknn:
+        return "rknn ";
+    case compose::mali:
+        return "mali ";
+    case compose::coral:
+        return "coral";
+    default:
+        return "error";
+    }
+}
+
+
 std::vector<compose::engine> compose::manager::engine_list() const {
     return std::vector<compose::engine>{
-#ifdef USE_NPU_MYRIAD
-        compose::engine::myriad,
-#endif
 #ifdef USE_GPU_MALI
         compose::engine::mali,
 #endif
@@ -33,6 +48,9 @@ std::vector<compose::engine> compose::manager::engine_list() const {
 #endif
 #ifdef USE_NPU_CORAL
         compose::engine::coral,
+#endif
+#ifdef USE_NPU_MYRIAD
+        compose::engine::myriad,
 #endif
 
     };

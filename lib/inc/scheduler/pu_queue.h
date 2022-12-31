@@ -6,23 +6,36 @@
 #include <string>
 #include <map>
 #include <compose/manager.h>
+#include <ctime>
+
+#include <chrono>
 
 #include <msd/channel.hpp>
 #include <functional>
 
+using namespace std::chrono;
+
 class buf_pu_queue { 
 private:
     std::thread loop;
-    msd::channel<std::string> chan{32}; // buffered
+    msd::channel<std::string> chan; // buffered
     bool stop_signal = false;
     std::string name = "none";
-    double fps = 0.0;
+    int inference_ = 0;
+    time_point<system_clock> tt = high_resolution_clock::now();
+
     buf_pu_queue(const buf_pu_queue& oth) = delete;
-
 public:
-    double get_fps() const { return fps; }
-
-    buf_pu_queue() { }
+    double get_fps() { 
+        double r = (double)inference_ / ((double)(high_resolution_clock::now() - tt).count() / 1000 / 1000 / 1000);
+        tt = high_resolution_clock::now();
+        inference_ = 0;
+        return r;
+    }
+    int get_buf() const { 
+        return chan.size();
+    }
+    buf_pu_queue(int queue_size = 32) : chan(queue_size) { }
 
     std::string get_name() const { return name; }
     

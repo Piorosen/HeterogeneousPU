@@ -10,12 +10,13 @@ std::string rknn_engine::get_name() const {
 }
 
 void rknn_engine::init(const std::string file, compose::model_info info) { 
+    printf("rknnn load : %s start\n", file.c_str());
     #ifdef USE_NPU_RKNN
     this->info = info;
-    rknn::run_loop();
     lib.load_model("./" + file + "/rknn/saved_model.rknn");
     // lib.load_model("./mobilenet_v1.rknn");
     #endif
+    printf("rknnn load : %s fin\n", file.c_str());
 }
 
 void rknn_engine::inference(const std::string image) {
