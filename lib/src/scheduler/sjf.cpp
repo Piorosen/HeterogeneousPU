@@ -3,6 +3,6 @@
 void sjf::deinit() { 
 
 }
-void sjf::sequence(std::vector<int> model_idx) { 
+void sjf::sequence(std::vector<std::string> model_idx) { 
 
 }

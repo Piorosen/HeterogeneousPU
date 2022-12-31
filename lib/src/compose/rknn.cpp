@@ -19,6 +19,7 @@ void rknn_engine::init(const std::string file, compose::model_info info) {
 }
 
 void rknn_engine::inference(const std::string image) {
+    this->is_inference = true;
     #ifdef USE_NPU_RKNN
     rknn::tensor_format layout;
     switch (info.layout) { 
@@ -42,6 +43,7 @@ void rknn_engine::inference(const std::string image) {
 
     while(!flag);
     #endif
+    this->is_inference = false;
 }
 
 void rknn_engine::deinit() { 

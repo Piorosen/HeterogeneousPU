@@ -3,6 +3,6 @@
 void srtf::deinit() { 
 
 }
-void srtf::sequence(std::vector<int> model_idx) { 
+void srtf::sequence(std::vector<std::string> model_idx) { 
 
 }

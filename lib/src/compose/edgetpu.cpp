@@ -1,6 +1,7 @@
 
 #include "extension/edgetpu.h"
 #include <compose/edgetpu.h>
+#include <stb/stb_image.h>
 
 std::string edgetpu_engine::get_name() const {
     return "edgetpu";
@@ -16,17 +17,12 @@ void edgetpu_engine::init(const std::string file, compose::model_info info) {
         std::cerr << "No connected TPU found" << std::endl;
         throw;
     }
+    printf("1\n");
+
     const auto& device = devices.get()[0];
 
-    // // Load labels.
-    // auto labels = tpu::ReadLabels(label_file);
-    // if (labels.empty()) {
-    //     std::cerr << "Cannot read labels from " << label_file << std::endl;
-    //     return;
-    // }
 
-    // Load model.
-    auto model = tflite::FlatBufferModel::BuildFromFile(("./" + file + "/tflite/saved_model.tflite").c_str());
+    model = tflite::FlatBufferModel::BuildFromFile(("./" + file + "/coral/saved_model.tflite").c_str());
     if (!model) {
         std::cerr << "Cannot read model from " << file << std::endl;
         throw;
@@ -44,14 +40,16 @@ void edgetpu_engine::init(const std::string file, compose::model_info info) {
     //   interpreter->ModifyGraphWithDelegate(std::make_shared<TfLiteDelegate, TfLiteDelegate>(delegate, edgetpu_free_delegate));
     //   interpreter->ModifyGraphWithDelegate(delegate);
 
-    // Allocate tensors.
-    if (interpreter->AllocateTensors() != kTfLiteOk) {
-        std::cerr << "Cannot allocate interpreter tensors" << std::endl;
-        throw;
-    }
-
+    // // Allocate tensors.
+    // if (interpreter->AllocateTensors() != kTfLiteOk) {
+    //     std::cerr << "Cannot allocate interpreter tensors" << std::endl;
+    //     throw;
+    // }
     // Set interpreter input.
     const auto* input_tensor = interpreter->input_tensor(0);
+    printf("info : %d, %d, %d\n\n", info.height, info.width, info.channel);
+
+    printf("%d", (int)input_tensor->type);
     if (input_tensor->type != kTfLiteUInt8 ||           //
         input_tensor->dims->data[0] != 1 ||             //
         input_tensor->dims->data[1] != info.height ||  //
@@ -61,42 +59,45 @@ void edgetpu_engine::init(const std::string file, compose::model_info info) {
         throw;
     }
 
+    printf("success!!!\n\n\n");
 }
+
 void edgetpu_engine::inference(const std::string image_file) {
-    // if (argc != 5) {
-    //     std::cerr << argv[0]
-    //             << " <model_file> <label_file> <image_file> <threshold>"
-    //             << std::endl;
-    //     return 1;
-    // }
-    // const std::string model_file = argv[1];
-    // const std::string label_file = argv[2];
-    // const std::string image_file = argv[3];
-    // const float threshold = std::stof(argv[4]);
+    // Load image.
+    this->is_inference = true; 
+
+    // Allocate tensors.
+    if (interpreter->AllocateTensors() != kTfLiteOk) {
+        std::cerr << "Cannot allocate interpreter tensors" << std::endl;
+        throw;
+    }
 
     // Load image.
     int image_bpp, image_width, image_height;
-    auto image =
-        tpu::ReadBmpImage(image_file.c_str(), &image_width, &image_height, &image_bpp);
+    auto image = tpu::ReadBmpImage("./00374.bmp", &image_width, &image_height, &image_bpp);
+    // stbi_load(image_file.c_str(), &image_width, &image_height, &image_bpp, 0);
+        
     if (image.empty()) {
         std::cerr << "Cannot read image from " << image_file << std::endl;
         throw;
     }
 
     std::copy(image.begin(), image.end(),
-                interpreter->typed_input_tensor<uint8_t>(0));
+                this->interpreter->typed_input_tensor<uint8_t>(0));
 
     // Run inference.
-    if (interpreter->Invoke() != kTfLiteOk) {
-        std::cerr << "Cannot invoke interpreter" << std::endl;
+    if (this->interpreter->Invoke() != kTfLiteOk) {
+        std::cerr << "Cannot invoke this->interpreter" << std::endl;
         throw;
     }
 
-    // Get interpreter output.
-    // auto results = tpu::Sort(tpu::Dequantize(*interpreter->output_tensor(0)), threshold);
+    // Get this->interpreter output.
+    // auto results = tpu::Sort(tpu::Dequantize(*this->interpreter->output_tensor(0)), threshold);
     // for (auto& result : results)
     //     std::cout << std::setw(7) << std::fixed << std::setprecision(5)
     //             << result.second << tpu::GetLabel(labels, result.first) << std::endl;
+    this->is_inference = false; 
+
     return;
 }
 void edgetpu_engine::deinit() {

@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.4.1)
 SET(PROJ_NAME chacha)
 project(${PROJ_NAME})
 
+# SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+
+
 # # Make the standard a requirement => prevent fallback to previous
 # # supported standard
 # set(CMAKE_C_STANDARD_REQUIRED       ON)
@@ -19,11 +22,11 @@ project(${PROJ_NAME})
 
 SET(USE_ARMNN_DELEGATE False CACHE BOOL "Use delegate file")
 
-# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARM_COMPUTE_CL")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -DARM_COMPUTE_CL")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARM_COMPUTE_CL")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -DARM_COMPUTE_CL")
 
 SET(GPU_MALI 	false)
-SET(CPU_ARM 	true)
+SET(CPU_ARM 	false)
 SET(NPU_MYRIAD 	true)
 SET(NPU_RKNN 	true)
 SET(NPU_CORAL 	true)
@@ -117,11 +120,12 @@ add_executable(${PROJ_NAME}
 
 		lib/src/stb_image.cpp
 		lib/src/argument/parser.cpp
+		lib/src/scheduler/pu_queue.cpp
 
 		lib/src/scheduler/sjf.cpp
 		lib/src/scheduler/efts.cpp
-		lib/src/scheduler/fcfs.cpp
 		lib/src/scheduler/srtf.cpp
+		lib/src/scheduler/fcfs.cpp
 		lib/src/scheduler/ischeduler.cpp
 		lib/src/scheduler/scheduler.cpp
 )

@@ -11,26 +11,19 @@ void ischeduler::init(const std::vector<std::string> models) {
     spdlog::info("ischeduler::init");
 
     auto s = high_resolution_clock::now();
-    for (const auto& m : models) { 
-        for (const auto& e : engines) { 
-            auto s1 = high_resolution_clock::now();
+    for (const auto& e : engines) { 
+        this->data[e] = std::make_shared<buf_pu_queue>();
+        volatile bool f = false;
+        this->data[e]->run_loop(models, e, [&f]() { 
+            printf("콜백\n");
 
-            data[e][m] = compose::manager::instance()->create(e);
-            spdlog::info("create : {}, {}", e, m);
-            compose::model_info mi;
-            mi.batch = 1;
-            mi.channel = 3;
-            mi.height = 224;
-            mi.width = 224;
-            mi.layout = compose::data_layout::nhwc;
-
-            data[e][m]->init("./model/" + m, mi);
-            auto e1 = high_resolution_clock::now();
-            spdlog::info("{}, {}, \t {} ns", e, m, (e1 - s1).count());
-        }
+            f = true;
+        });
+        printf("챠챠 [ %s ] \n", data[e]->get_name());
+    
+        while(!f);
     }
     auto e = high_resolution_clock::now();
 
     spdlog::info("fin : {} ns", (e - s).count());
-
 }
