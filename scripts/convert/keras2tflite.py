@@ -15,6 +15,12 @@ if __name__ == '__main__':
     model.summary()
     
     converter = tf.lite.TFLiteConverter.from_keras_model(model)
+    converter.optimizations = [tf.lite.Optimize.DEFAULT]
+    converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
+    converter.representative_dataset = representative_dataset_gen
+    converter.inference_input_type = tf.uint8
+    converter.inference_output_type = tf.uint8
+
     tflite_model = converter.convert()
     # Save the model.
     with open(args.outputFile, 'wb') as f:
