@@ -1,5 +1,4 @@
 #include <scheduler/fcfs.h>
-#include <random>
 #include <chrono>
 
 using namespace std::chrono;
@@ -10,7 +9,6 @@ void fcfs::deinit() {
 
 void fcfs::sequence(std::vector<std::string> model_idx) {
     auto l = compose::manager::instance()->engine_list();
-    std::random_device rd;
     auto start = high_resolution_clock::now();
     auto cc = high_resolution_clock::now();
 
@@ -32,8 +30,8 @@ void fcfs::sequence(std::vector<std::string> model_idx) {
             }
         }
         sel->enqueue(m);
-
-        if (i % 200 == 0) { 
+        // printf("%d\n",  (high_resolution_clock::now() - cc).count());
+        if ((high_resolution_clock::now() - cc).count() / 1000 / 1000 > 3000) { 
             for (const auto& engine : this->data) { 
                 printf("%s : %.3f \tfps\n", compose::engine_to_string(engine.first).c_str(), engine.second->get_fps());
             }

@@ -26,7 +26,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DARM_COMPUTE_CL")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -DARM_COMPUTE_CL")
 
 SET(GPU_MALI 	false)
-SET(CPU_ARM 	false)
+SET(CPU_ARM 	true)
 SET(NPU_MYRIAD 	true)
 SET(NPU_RKNN 	true)
 SET(NPU_CORAL 	true)
@@ -124,7 +124,7 @@ add_executable(${PROJ_NAME}
 
 		lib/src/scheduler/sjf.cpp
 		lib/src/scheduler/efts.cpp
-		lib/src/scheduler/srtf.cpp
+		lib/src/scheduler/hrn.cpp
 		lib/src/scheduler/fcfs.cpp
 		lib/src/scheduler/random_sche.cpp
 		lib/src/scheduler/round_robine.cpp

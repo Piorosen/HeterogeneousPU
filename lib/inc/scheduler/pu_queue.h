@@ -23,6 +23,7 @@ private:
     std::string name = "none";
     int inference_ = 0;
     time_point<system_clock> tt = high_resolution_clock::now();
+    std::map<std::string, double> score_model;
 
     buf_pu_queue(const buf_pu_queue& oth) = delete;
 public:
@@ -39,6 +40,7 @@ public:
 
     std::string get_name() const { return name; }
     
+    double weight_value(std::string data);
     void enqueue(std::string data);
     
     void run_loop(std::vector<std::string> model, compose::engine e, std::function<void()> callback);

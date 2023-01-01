@@ -20,7 +20,10 @@ void edgetpu_engine::init(const std::string file, compose::model_info info) {
     printf("1\n");
 
     const auto& device = devices.get()[0];
-
+    for (int i = 0; i < num_devices; i++) { 
+        auto& d = devices.get()[i];
+        printf("%d %d, %s\n", i, d.type, d.path);
+    }
 
     model = tflite::FlatBufferModel::BuildFromFile(("./" + file + "/coral/saved_model.tflite").c_str());
     if (!model) {
@@ -38,7 +41,7 @@ void edgetpu_engine::init(const std::string file, compose::model_info info) {
     auto* delegate = edgetpu_create_delegate(device.type, device.path, nullptr, 0);
     //
     //   interpreter->ModifyGraphWithDelegate(std::make_shared<TfLiteDelegate, TfLiteDelegate>(delegate, edgetpu_free_delegate));
-    //   interpreter->ModifyGraphWithDelegate(delegate);
+    interpreter->ModifyGraphWithDelegate(delegate);
 
     // // Allocate tensors.
     // if (interpreter->AllocateTensors() != kTfLiteOk) {

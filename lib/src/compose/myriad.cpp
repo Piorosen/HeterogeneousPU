@@ -72,21 +72,21 @@ void myriad_engine::init(const std::string file, compose::model_info info) {
     compiled_model = core.compile_model(model, availableDevices[0]);
 }
 
-unsigned char* data = nullptr;
+unsigned char* data_myriad = nullptr;
 int width, height, c;
 
 void myriad_engine::inference(const std::string image) {
     this->is_inference = true;
     ov::InferRequest infer_request = compiled_model.create_infer_request();
-    if (data == nullptr) { 
-        data = stbi_load(image.c_str(), &width, &height, &c, 0);
+    if (data_myriad == nullptr) { 
+        data_myriad = stbi_load(image.c_str(), &width, &height, &c, 0);
     }
-    ov::Tensor input_tensor = ov::Tensor(ov::element::u8, this->input_shape, data);
+    ov::Tensor input_tensor = ov::Tensor(ov::element::u8, this->input_shape, data_myriad);
     infer_request.set_input_tensor(input_tensor);
     infer_request.infer();
     this->is_inference = false; 
 }
 
 void myriad_engine::deinit() { 
-    stbi_image_free(data);
+    stbi_image_free(data_myriad);
 }

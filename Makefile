@@ -13,8 +13,10 @@ CYTHON_EXECUTABLE := /usr/bin/cython3
 PYTHON_EXECUTABLE := /usr/bin/python3.7
 PYTHON_LIBRARY := /usr/lib/aarch64-linux-gnu/libpython3.7m.so
 PYTHON_INCLUDE_DIR := /usr/include/python3.7
-CC := ${GCC_COMPILER}-gcc
-CXX := ${GCC_COMPILER}-g++
+# CC := ${GCC_COMPILER}-gcc
+# CXX := ${GCC_COMPILER}-g++
+CC := gcc
+CXX := g++
 
 .PHONY: all build test configure opencv openvino rknn armcl clean
 
@@ -40,12 +42,12 @@ build:
 		mkdir build; \
 	fi
 	
-	cd build && cmake .. -G Ninja \
-		-DCMAKE_C_COMPILER=${GCC_COMPILER}-gcc \
-		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ \
+	cd build && cmake .. \
+		-DCMAKE_C_COMPILER=/usr/bin/gcc \
+		-DCMAKE_CXX_COMPILER=/usr/bin/g++ \
 		-DCMAKE_BUILD_TYPE=Release
 		
-	cd build && ninja
+	cd build && make -j2
 		
 
 configure: rknn 
@@ -162,7 +164,9 @@ rknn:
 		-DCMAKE_CXX_COMPILER=${GCC_COMPILER}-g++ \
 		-DCMAKE_BUILD_TYPE=Release && \
 		make install 
-
+		
+	cp module/SimpleRKNN/bin/*.a link/
+	cp module/SimpleRKNN/bin/*.so link/
 armcl: 
 	cd module/ArmCL && \
 		scons Werror=0 debug=0 asserts=0 logging=0 neon=1 opencl=1 cppthreads=1 openmp=0 arch=armv8a example=0 -j$(shell nproc --all)

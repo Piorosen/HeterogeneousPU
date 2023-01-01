@@ -1,10 +1,20 @@
 #include <scheduler/pu_queue.h>
+#include <chrono>
+
 #ifdef USE_NPU_RKNN
 #include <SimpleRKNN/simple_rknn.h>
 #endif
 
+using namespace std::chrono;
+
+double buf_pu_queue::weight_value(std::string data) { 
+    return this->score_model[data];
+}
+
 void buf_pu_queue::run_loop(std::vector<std::string> model, compose::engine e, std::function<void()> callback) { 
-   
+    for (const auto& m : model) { 
+        this->score_model[m] = 1000 * 100;
+    }
     printf("aaa~!~!");
     fflush(stdout);
 
@@ -36,14 +46,17 @@ void buf_pu_queue::run_loop(std::vector<std::string> model, compose::engine e, s
         auto n = clock();
 
         for (const auto& model : this->chan){
+            
             this->inference_ += 1;
             infer += 1;
             if (this->stop_signal == true) { 
                 return;
             }
+            auto start = high_resolution_clock::now();
             // printf("실행됨! [ %s ] : [ %03d ] [ %s ] \n ", name.c_str(), infer, model.c_str());
             models[model]->inference("00374.jpg");
-
+            this->score_model[model] = (double)(high_resolution_clock::now() - start).count() / 1000 / 1000;
+             
         }
     });
 }

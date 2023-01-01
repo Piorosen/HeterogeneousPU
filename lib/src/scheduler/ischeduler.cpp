@@ -18,7 +18,7 @@ void ischeduler::init(const std::vector<std::string> models, int queue_size) {
             printf("콜백\n");
             f = true;
         });
-        printf("챠챠 [ %s ] \n", data[e]->get_name());
+        printf("챠챠 [ %s ] \n", data[e]->get_name().c_str());
     
         while(!f);
     }

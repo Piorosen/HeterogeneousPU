@@ -3,7 +3,7 @@
 #include <scheduler/efts.h>
 #include <scheduler/fcfs.h>
 #include <scheduler/sjf.h>
-#include <scheduler/srtf.h>
+#include <scheduler/hrn.h>
 #include <scheduler/round_robine.h>
 #include <scheduler/random_sche.h>
 #include <memory>
@@ -14,7 +14,7 @@ private:
     efts eft;
     fcfs fcf;
     sjf sj;
-    srtf srt;
+    hrn hrns;
     round_robine rr;
     random_sche rss;
     
@@ -40,9 +40,9 @@ public:
         return &sj;
     }
 
-    ischeduler* srtf_scheduler() {
-        spdlog::info("srtf_scheduler");
-        return &srt;
+    ischeduler* hrn_scheduler() {
+        spdlog::info("hrn_scheduler");
+        return &hrns;
     }
     ischeduler* random_scheduler() {
         spdlog::info("random_sche");
