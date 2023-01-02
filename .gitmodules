@@ -1,12 +1,6 @@
-[submodule "module/ArmCL"]
-	path = module/ArmCL
-	url = https://github.com/Piorosen/ComputeLibrary
 [submodule "module/SimpleRKNN"]
 	path = module/SimpleRKNN
 	url = https://github.com/Piorosen/SimpleRKNN
-[submodule "module/OpenVINO"]
-	path = module/OpenVINO
-	url = https://github.com/openvinotoolkit/openvino
 [submodule "module/args"]
 	path = module/args
 	url = https://github.com/Taywee/args
