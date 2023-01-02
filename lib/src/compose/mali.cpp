@@ -33,16 +33,16 @@ void mali_engine::inference(const std::string image) {
     int width = 224, height = 224, c = 3;
     
     // stbi_uc* data = stbi_load(image.c_str(), &width, &height, &c, 0);
-    if (data_neon == nullptr) { 
-           data_neon = (stbi_uc*)malloc(224 * 224 * 3 * 4);
+    if (data_mali == nullptr) { 
+           data_mali = (stbi_uc*)malloc(224 * 224 * 3 * 4);
     }
     // cout << width << " " << height << " " << c << "\n";
-    this->target->Inference((unsigned char*)data_neon, width * height * c, sizeof(float), results);
+    this->target->Inference((unsigned char*)data_mali, width * height * c, sizeof(float), results);
     // free(data);
     // stbi_image_free(data);
     this->is_inference = false;
     
 }
 void mali_engine::deinit() { 
-    free(data_neon);
+    free(data_mali);
 }
