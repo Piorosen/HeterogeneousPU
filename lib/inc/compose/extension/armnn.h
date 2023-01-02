@@ -136,22 +136,20 @@ ArmnnNetworkExecutor<Tout>::ArmnnNetworkExecutor(std::string& modelPath,
     armnn::BackendOptions modelOptionCpu("CpuAcc", {{"FastMathEnabled", false}});
     optimizerOptions.m_ModelOptions.push_back(modelOptionCpu);
     /* enable reduce float32 to float16 optimization */
-    optimizerOptions.m_ReduceFp32ToFp16 = false;
+    optimizerOptions.m_ReduceFp32ToFp16 = true;
     for (const auto& c : preferredBackends) { 
         std::cout << "Backend : " << c << "\n";
     }
     armnnDelegate::DelegateOptions delegateOptions(preferredBackends);
-    std::cout << "1\n";
     // /* create delegate object */
-    std::unique_ptr<TfLiteDelegate, decltype(&armnnDelegate::TfLiteArmnnDelegateDelete)>
-                theArmnnDelegate(armnnDelegate::TfLiteArmnnDelegateCreate(delegateOptions),
-                                 armnnDelegate::TfLiteArmnnDelegateDelete);
-    std::cout << "\n2\n";
+    // std::unique_ptr<TfLiteDelegate, decltype(&armnnDelegate::TfLiteArmnnDelegateDelete)>
+    //             theArmnnDelegate(armnnDelegate::TfLiteArmnnDelegateCreate(delegateOptions),
+    //                              armnnDelegate::TfLiteArmnnDelegateDelete);
     
     /* Register the delegate file */
-    m_interpreter->ModifyGraphWithDelegate(std::move(theArmnnDelegate));
+    // m_interpreter->ModifyGraphWithDelegate(std::move(theArmnnDelegate));
+    m_interpreter->ModifyGraphWithDelegate(armnnDelegate::TfLiteArmnnDelegateCreate(delegateOptions));
 
-    std::cout << "3\n";
 
     m_profiling.ProfilingStopAndPrintUs("Create and load ArmNN Delegate");
 }
@@ -159,9 +157,14 @@ ArmnnNetworkExecutor<Tout>::ArmnnNetworkExecutor(std::string& modelPath,
 template<typename Tout>
 void ArmnnNetworkExecutor<Tout>::PrepareTensors(const void *inputData, const size_t dataBytes)
 {
+    if (m_interpreter->AllocateTensors() != kTfLiteOk) {
+        std::cerr << "Cannot allocate interpreter tensors" << std::endl;
+        throw;
+    }
+
     size_t inputTensorSize = m_interpreter->input_tensor(0)->bytes;
     auto * inputTensorPtr = m_interpreter->input_tensor(0)->data.raw;
-    printf("%d ::: %d\n\n", inputTensorSize, dataBytes);
+    // printf("%d ::: %d\n\n", inputTensorSize, dataBytes);
     assert(inputTensorSize >= dataBytes);
     if (inputTensorPtr != nullptr)
     {
@@ -186,10 +189,8 @@ bool ArmnnNetworkExecutor<Tout>::Run(const void *inputData, const size_t dataByt
 
     if (m_interpreter->Invoke() == kTfLiteOk)
     {
-
-
         ret = true;
-        // Extract the output tensor data.
+       // Extract the output tensor data.
         outResults.clear();
         outResults.reserve(m_interpreter->outputs().size());
         for (int index = 0; index < m_interpreter->outputs().size(); index++)
