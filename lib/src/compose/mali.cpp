@@ -22,15 +22,27 @@ void mali_engine::init(const std::string file, compose::model_info info) {
        printf("MALI!!\n\n\n");
     this->target = od::CreatePipeline(option);
 }
-void mali_engine::inference(const std::string image) {
-    common::InferenceResults<float> results;
-    int width, height, c;
+
        
-    stbi_uc* data = stbi_load(image.c_str(), &width, &height, &c, 0);
+
+stbi_uc* data_mali = nullptr;
+
+void mali_engine::inference(const std::string image) {
+    this->is_inference = true;
+    common::InferenceResults<float> results;
+    int width = 224, height = 224, c = 3;
+    
+    // stbi_uc* data = stbi_load(image.c_str(), &width, &height, &c, 0);
+    if (data_neon == nullptr) { 
+           data_neon = (stbi_uc*)malloc(224 * 224 * 3 * 4);
+    }
     // cout << width << " " << height << " " << c << "\n";
-    this->target->Inference((unsigned char*)data, width * height * c, 1, results);
-    stbi_image_free(data);
+    this->target->Inference((unsigned char*)data_neon, width * height * c, sizeof(float), results);
+    // free(data);
+    // stbi_image_free(data);
+    this->is_inference = false;
+    
 }
 void mali_engine::deinit() { 
-    
+    free(data_neon);
 }
