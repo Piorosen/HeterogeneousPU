@@ -99,7 +99,11 @@ if [ $ARCH == "aarch64" ]; then
     wget https://github.com/Piorosen/HeterogeneousPU/releases/download/OpenVINO-2022-03/OpenVINO.tar.gz -P components && \
     tar -zxvf components/OpenVINO.tar.gz -C components
     echo "source ${DIR}/components/OpenVINO/setupvars.sh" >> ~/.bashrc
-	echo "export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:./link" >> ~/.bashrc
+	echo "export LD_LIBRARY_PATH=/usr/lib/mali:$(pwd)/link:$$LD_LIBRARY_PATH:" >> ~/.bashrc
+
+
+    sudo apt-get install clinfo
+
 fi
 
 echo "done"
