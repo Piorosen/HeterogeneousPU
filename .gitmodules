@@ -16,3 +16,6 @@
 [submodule "module/armnn"]
 	path = module/armnn
 	url = https://github.com/ARM-software/armnn
+[submodule "link"]
+	path = link
+	url = https://github.com/Piorosen/HeterogeneousPU_Module
