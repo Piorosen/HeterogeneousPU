@@ -1,5 +1,4 @@
-
-#include "extension/edgetpu.h"
+#include <compose/extension/edgetpu.h>
 #include <compose/edgetpu.h>
 #include <stb/stb_image.h>
 
@@ -65,6 +64,8 @@ void edgetpu_engine::init(const std::string file, compose::model_info info) {
     printf("success!!!\n\n\n");
 }
 
+std::vector<uint8_t> coral_image;
+
 void edgetpu_engine::inference(const std::string image_file) {
     // Load image.
     this->is_inference = true; 
@@ -77,15 +78,17 @@ void edgetpu_engine::inference(const std::string image_file) {
 
     // Load image.
     int image_bpp, image_width, image_height;
-    auto image = tpu::ReadBmpImage("./00374.bmp", &image_width, &image_height, &image_bpp);
+    if (coral_image.size() == 0){ 
+        coral_image = tpu::ReadBmpImage("./00374.bmp", &image_width, &image_height, &image_bpp);
+    }
     // stbi_load(image_file.c_str(), &image_width, &image_height, &image_bpp, 0);
         
-    if (image.empty()) {
+    if (coral_image.empty()) {
         std::cerr << "Cannot read image from " << image_file << std::endl;
         throw;
     }
 
-    std::copy(image.begin(), image.end(),
+    std::copy(coral_image.begin(), coral_image.end(),
                 this->interpreter->typed_input_tensor<uint8_t>(0));
 
     // Run inference.
