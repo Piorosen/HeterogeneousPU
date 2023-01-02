@@ -30,13 +30,12 @@ void fcfs::sequence(std::vector<std::string> model_idx) {
             }
         }
         sel->enqueue(m);
-
         // printf("%d\n",  (high_resolution_clock::now() - cc).count());
         if ((high_resolution_clock::now() - cc).count() / 1000 / 1000 > 3000) { 
             for (const auto& engine : this->data) { 
                 printf("%s : %.3f \tfps\n", compose::engine_to_string(engine.first).c_str(), engine.second->get_fps());
             }
-            printf("total  : %.3f \tfps\n", ((double)i) / ((double)(high_resolution_clock::now() - cc).count() / 1000 / 1000 / 1000));
+            printf("stotal : %.3f \tfps\n", ((double)200) / ((double)(high_resolution_clock::now() - cc).count() / 1000 / 1000 / 1000));
             printf("start : %.3f\n\n", (double)(high_resolution_clock::now() - start).count() / 1000 / 1000 / 1000);
             
             cc = high_resolution_clock::now();

@@ -22,13 +22,13 @@ std::string compose::engine_to_string(compose::engine e) {
     case compose::myriad:
         return "myriad";
     case compose::neon:
-        return "neon  ";
+        return "neon ";
     case compose::rknn:
-        return "rknn  ";
+        return "rknn ";
     case compose::mali:
-        return "mali  ";
+        return "mali ";
     case compose::coral:
-        return "coral ";
+        return "coral";
     default:
         return "error";
     }
@@ -41,16 +41,16 @@ std::vector<compose::engine> compose::manager::engine_list() const {
         compose::engine::mali,
 #endif
 #ifdef USE_CPU_ARM
-        // compose::engine::neon,
+        compose::engine::neon,
 #endif
 #ifdef USE_NPU_RKNN
-        // compose::engine::rknn,
+        compose::engine::rknn,
 #endif
 #ifdef USE_NPU_CORAL
-        // compose::engine::coral,
+        compose::engine::coral,
 #endif
 #ifdef USE_NPU_MYRIAD
-        // compose::engine::myriad,
+        compose::engine::myriad,
 #endif
 
     };
