@@ -1,2 +1,0 @@
-# ArmCL, SimpleRKNN
-
