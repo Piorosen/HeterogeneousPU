@@ -124,7 +124,6 @@ add_executable(${PROJ_NAME}
 
 		lib/src/scheduler/dfs_scheduler.cpp
 		lib/src/scheduler/fcfs.cpp
-		lib/src/scheduler/random_sche.cpp
 		lib/src/scheduler/round_robine.cpp
 		
 		lib/src/scheduler/ischeduler.cpp
