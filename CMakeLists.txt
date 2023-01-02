@@ -122,9 +122,7 @@ add_executable(${PROJ_NAME}
 		lib/src/argument/parser.cpp
 		lib/src/scheduler/pu_queue.cpp
 
-		lib/src/scheduler/sjf.cpp
-		lib/src/scheduler/efts.cpp
-		lib/src/scheduler/hrn.cpp
+		lib/src/scheduler/dfs_scheduler.cpp
 		lib/src/scheduler/fcfs.cpp
 		lib/src/scheduler/random_sche.cpp
 		lib/src/scheduler/round_robine.cpp
