@@ -37,20 +37,20 @@ std::string compose::engine_to_string(compose::engine e) {
 
 std::vector<compose::engine> compose::manager::engine_list() const {
     return std::vector<compose::engine>{
-#ifdef USE_GPU_MALI
-        // compose::engine::mali,
-#endif
 #ifdef USE_CPU_ARM
         // compose::engine::neon,
 #endif
+#ifdef USE_GPU_MALI
+        // compose::engine::mali,
+#endif
+#ifdef USE_NPU_MYRIAD
+        compose::engine::myriad,
+#endif
 #ifdef USE_NPU_RKNN
-        // compose::engine::rknn,
+        compose::engine::rknn,
 #endif
 #ifdef USE_NPU_CORAL
         compose::engine::coral,
-#endif
-#ifdef USE_NPU_MYRIAD
-        // compose::engine::myriad,
 #endif
     };
 }
