@@ -57,7 +57,7 @@ void buf_pu_queue::run_loop(std::vector<std::string> model, compose::engine e, s
             // printf("실행됨! [ %s ] : [ %03d ] [ %s ] \n ", name.c_str(), infer, model.c_str());
             models[model]->inference("00374.jpg");
             this->score_model[model] = (double)(high_resolution_clock::now() - start).count() / 1000 / 1000;
-             
+            this->total_inference += 1;
         }
     });
 }

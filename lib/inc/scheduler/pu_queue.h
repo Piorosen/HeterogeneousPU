@@ -24,7 +24,7 @@ private:
     int inference_ = 0;
     time_point<system_clock> tt = high_resolution_clock::now();
     std::map<std::string, double> score_model;
-
+    int total_inference = 0;
     buf_pu_queue(const buf_pu_queue& oth) = delete;
 public:
     double get_fps() { 
@@ -45,4 +45,7 @@ public:
     
     void run_loop(std::vector<std::string> model, compose::engine e, std::function<void()> callback);
     void close_loop();
+    int get_compute() const { 
+        return total_inference;
+    }
 };

@@ -38,7 +38,7 @@ std::string compose::engine_to_string(compose::engine e) {
 std::vector<compose::engine> compose::manager::engine_list() const {
     return std::vector<compose::engine>{
 #ifdef USE_CPU_ARM
-        // compose::engine::neon,
+        compose::engine::neon,
 #endif
 #ifdef USE_GPU_MALI
         // compose::engine::mali,

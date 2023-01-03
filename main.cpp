@@ -13,10 +13,10 @@ using namespace std::chrono;
 
 int main(int argc, char **argv)
 {
-    auto eft = scheduler::instance()->min_assign();
-    vector<string> models { "resnet50", "resnet101", "mobilenet"  };
-    // vector<string> models { "mobilenet" };
-    eft->init(models, 32);
+    auto eft = scheduler::instance()->max_min();
+    // vector<string> models { "resnet50", "resnet1001", "mobilenet"  };
+    vector<string> models { "resnet101", "mobilenet", "resnet50",   };
+    eft->init(models, 0);
     printf("hahaha\n\n");
     eft->sequence(models);
 
