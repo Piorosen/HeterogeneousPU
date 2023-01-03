@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     auto eft = scheduler::instance()->min_assign();
     vector<string> models { "resnet50", "resnet101", "mobilenet"  };
     // vector<string> models { "mobilenet" };
-    eft->init(models, 1100);
+    eft->init(models, 32);
     printf("hahaha\n\n");
     eft->sequence(models);
 

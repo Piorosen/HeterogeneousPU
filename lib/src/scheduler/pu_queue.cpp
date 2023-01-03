@@ -14,6 +14,7 @@ double buf_pu_queue::weight_value(std::string data) {
 void buf_pu_queue::run_loop(std::vector<std::string> model, compose::engine e, std::function<void()> callback) { 
     for (const auto& m : model) { 
         this->score_model[m] = 1000 * 100;
+        printf("create : %s\n", m.c_str());
     }
     printf("aaa~!~!");
     fflush(stdout);

@@ -13,11 +13,11 @@ void min_assign_scheduler::sequence(std::vector<std::string> model_idx) {
         // 버퍼크기 16미만일떄까지 루프 돌아야지
         auto m = model_idx[i % model_idx.size()];
         if (model_idx[i % model_idx.size()] == "resnet101") {
-            this->data[compose::engine::rknn]["resnet101"]->enqueue(m);
+            this->data[compose::engine::rknn]->enqueue(m);
         }else if (model_idx[i % model_idx.size()] == "resnet50") {
-            this->data[compose::engine::myriad]["resnet50"]->enqueue(m);
+            this->data[compose::engine::myriad]->enqueue(m);
         }else {
-            this->data[compose::engine::coral]["mobilenet"]->enqueue(m);
+            this->data[compose::engine::coral]->enqueue(m);
         }
 
         // printf("%d\n",  (high_resolution_clock::now() - cc).count());
@@ -37,5 +37,4 @@ void min_assign_scheduler::sequence(std::vector<std::string> model_idx) {
         }
     }
     printf("finish : %.3f\n\n", (double)(high_resolution_clock::now() - start).count() / 1000 / 1000 / 1000);
-}
 }
