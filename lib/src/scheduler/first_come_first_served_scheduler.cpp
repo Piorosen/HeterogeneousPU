@@ -1,13 +1,13 @@
-#include <scheduler/fcfs.h>
+#include <scheduler/first_come_first_served_scheduler.h>
 #include <chrono>
 
 using namespace std::chrono;
 
-void fcfs::deinit() { 
+void first_come_first_served_scheduler::deinit() { 
 
 }
 
-void fcfs::sequence(std::vector<std::string> model_idx) {
+void first_come_first_served_scheduler::sequence(std::vector<std::string> model_idx) {
     auto l = compose::manager::instance()->engine_list();
     auto start = high_resolution_clock::now();
     auto cc = high_resolution_clock::now();

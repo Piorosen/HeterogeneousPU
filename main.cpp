@@ -13,7 +13,7 @@ using namespace std::chrono;
 
 int main(int argc, char **argv)
 {
-    auto eft = scheduler::instance()->fcfs_scheduler();
+    auto eft = scheduler::instance()->first_come_first_served();
     // vector<string> models { "resnet101"  };
     vector<string> models { "mobilenet" };
     eft->init(models, 32);
