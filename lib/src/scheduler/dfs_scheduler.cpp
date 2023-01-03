@@ -27,7 +27,7 @@ void dfs_scheduler::sequence(std::vector<std::string> model_idx) {
             }
             if (sel != nullptr) { 
                 break;
-            }
+            } 
         }
         sel->enqueue(m);
         // printf("%d\n",  (high_resolution_clock::now() - cc).count());
