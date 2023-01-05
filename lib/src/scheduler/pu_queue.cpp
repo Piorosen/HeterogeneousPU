@@ -23,6 +23,7 @@ void buf_pu_queue::run_loop(std::vector<std::string> model, compose::engine e, s
         std::map<std::string, std::shared_ptr<iengine>> models;
         for (const auto& m : model) { 
             models[m] = compose::manager::instance()->create(e);
+            this->name = models[m]->get_name(); 
 
             compose::model_info mi;
             mi.batch = 1;

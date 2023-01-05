@@ -2,6 +2,11 @@
 #include <scheduler/priority_scheduler.h>
 
 #include <chrono>
+#include <map>
+#include <memory>
+#include <queue>
+#include <array>
+#include <string>
 
 using namespace std;
 using namespace std::chrono;
@@ -10,31 +15,56 @@ void priority_scheduler::deinit() {
 
 }
 
+map<string, int> pu_to_idx;
+
+array<array<int, 3>, 4> priority_table {{
+    { 0,1,2},
+    // { 1,2,0},
+    {1,2,0},
+    {0,2,1},
+    {2,1,0}
+}};
+
+array<string, 3> model {{
+    "mobilenet", "resnet50", "resnet101"
+}};
+
 void priority_scheduler::sequence(std::vector<std::string> model_idx) { 
+    pu_to_idx["neon"] = 0;
+    pu_to_idx["myriad"] = 1;
+    pu_to_idx["edgetpu"] = 2;
+    pu_to_idx["rknn"] = 3;
+    
     auto l = compose::manager::instance()->engine_list();
     auto start = high_resolution_clock::now();
     auto cc = high_resolution_clock::now();
-     for (int i = 0, j = 0; true; i++, j++) {
+
+    array<int, 3> count = {{0,0,0}};  
+
+    for (int i = 0, j = 0; true; i++, j++) {
         // 버퍼크기 16미만일떄까지 루프 돌아야지
-        auto m = model_idx[i % model_idx.size()];
+        if (j > 3000) { 
+            // 버퍼크기 16미만일떄까지 루프 돌아야지
+            std::shared_ptr<buf_pu_queue> sel = nullptr;
+            while (true) { 
+                for (const auto& s : this->data) { 
+                    if (s.second->get_buf() < 1) { 
+                        sel = s.second;
+                    }
+                }
+                if (sel != nullptr) { 
+                    break;
+                }
+            }
 
-        // if (!inferdata.empty()) { 
-        //     compose::engine e;
-        //     auto f = inferdata.front();
-
-        //     inferdata.pop();
-        //     if (get<0>(f) == 0) {       // CPU
-        //         e = compose::engine::neon;
-        //     }else if (get<0>(f) == 1) { // NCS2
-        //         e = compose::engine::myriad;
-        //     }else if (get<0>(f) == 2) { // Coral
-        //         e = compose::engine::coral;
-        //     }else if (get<0>(f) == 3) { // Rockchip
-        //         e = compose::engine::rknn;
-        //     }
-
-        //     this->data[e]->enqueue(get<1>(f));
-        // }
+            for (int a = 0; a < 3; a++) { 
+                if (count[priority_table[pu_to_idx[sel->get_name()]][a]] >= 1000) {
+                    continue;
+                }
+                count[priority_table[pu_to_idx[sel->get_name()]][a]] += 1;
+                sel->enqueue(model[priority_table[pu_to_idx[sel->get_name()]][a]]);
+            }
+        }
         
         
         // printf("%d\n",  (high_resolution_clock::now() - cc).count());
