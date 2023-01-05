@@ -10,19 +10,21 @@ void affinity_scheduler::sequence(std::vector<std::string> model_idx) {
     auto cc = high_resolution_clock::now();
 
     for (int i = 0; ; i++) {
-        // 버퍼크기 16미만일떄까지 루프 돌아야지
-        switch (i % 3) { 
-        case 0:
-            this->data[compose::engine::coral]->enqueue("mobilenet");
-            break;
-        case 1:
-            this->data[compose::engine::myriad]->enqueue("resnet50");
-            break;
-        case 2:
-            this->data[compose::engine::rknn]->enqueue("resnet101");
-            break;
-        default:
-            throw "?!?!?!?!";
+        if (i > 3000) {
+            // 버퍼크기 16미만일떄까지 루프 돌아야지
+            switch (i % 3) { 
+            case 0:
+                this->data[compose::engine::coral]->enqueue("mobilenet");
+                break;
+            case 1:
+                this->data[compose::engine::myriad]->enqueue("resnet50");
+                break;
+            case 2:
+                this->data[compose::engine::rknn]->enqueue("resnet101");
+                break;
+            default:
+                throw "?!?!?!?!";
+            }
         }
 
         // printf("%d\n",  (high_resolution_clock::now() - cc).count());
