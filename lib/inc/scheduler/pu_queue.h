@@ -13,6 +13,7 @@
 #include <msd/channel.hpp>
 #include <functional>
 
+using namespace std;
 using namespace std::chrono;
 
 class buf_pu_queue { 
@@ -25,6 +26,9 @@ private:
     time_point<system_clock> tt = high_resolution_clock::now();
     std::map<std::string, double> score_model;
     int total_inference = 0;
+    
+    map<string, int> pu_to_idx;
+
     buf_pu_queue(const buf_pu_queue& oth) = delete;
 public:
     double get_fps() { 
@@ -36,7 +40,13 @@ public:
     int get_buf() const { 
         return chan.size();
     }
-    buf_pu_queue(int queue_size = 32) : chan(queue_size) { }
+    buf_pu_queue(int queue_size = 32) : chan(queue_size) { 
+        pu_to_idx["mobilenet"] = 0;
+        pu_to_idx["resnet50"] = 0;
+        pu_to_idx["resnet101"] = 0;
+        
+
+    }
 
     std::string get_name() const { return name; }
     
@@ -48,6 +58,11 @@ public:
     int get_compute() const { 
         return total_inference;
     }
-    virtual void inference_result() const {printf("hinghing\n");}
+    void inference_result() const  {
+        printf("Inference Engine : [ %s ]\n", this->get_name().c_str()); 
+        for (const auto& p : pu_to_idx) { 
+            printf("%s : %04d\n", p.first.c_str(), p.second);
+        }
+    }
 
 };

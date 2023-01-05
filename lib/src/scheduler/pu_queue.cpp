@@ -21,9 +21,14 @@ void buf_pu_queue::run_loop(std::vector<std::string> model, compose::engine e, s
 
     loop = std::thread([this, model, e, callback]() { 
         std::map<std::string, std::shared_ptr<iengine>> models;
-        for (const auto& m : model) { 
-            models[m] = compose::manager::instance()->create(e);
-            this->name = models[m]->get_name(); 
+        for (const auto& m : model) {
+            string model_name = m;  
+            if (e == compose::engine::myriad) {
+                model_name = model[model.size() - 1];
+            }
+
+            models[model_name] = compose::manager::instance()->create(e);
+            this->name = models[model_name]->get_name(); 
 
             compose::model_info mi;
             mi.batch = 1;
@@ -31,7 +36,7 @@ void buf_pu_queue::run_loop(std::vector<std::string> model, compose::engine e, s
             mi.height = 224;
             mi.width = 224;
             mi.layout = compose::data_layout::nhwc;
-            models[m]->init("./model/" + m, mi);
+            models[m]->init("./model/" + model_name, mi);
             if (e == compose::engine::myriad) {
                 break;
             } 
@@ -48,6 +53,7 @@ void buf_pu_queue::run_loop(std::vector<std::string> model, compose::engine e, s
         auto n = clock();
 
         for (const auto& model : this->chan){
+            this->pu_to_idx[model] += 1;
             
             this->inference_ += 1;
             infer += 1;
