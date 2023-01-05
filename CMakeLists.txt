@@ -126,13 +126,10 @@ add_executable(${PROJ_NAME}
 		lib/src/argument/parser.cpp
 		lib/src/scheduler/pu_queue.cpp
 
-		# lib/src/scheduler/dfs_scheduler.cpp
-		# lib/src/scheduler/round_robine.cpp
-		
 		lib/src/scheduler/first_come_first_served_scheduler.cpp
-		lib/src/scheduler/min_assign_scheduler.cpp
-		lib/src/scheduler/max_min_scheduler.cpp
-		lib/src/scheduler/real_time_genetic_scheduler.cpp
+		lib/src/scheduler/affinity_scheduler.cpp
+		lib/src/scheduler/priority_scheduler.cpp
+		lib/src/scheduler/short_job_first_scheduler.cpp
 		
 		
 		lib/src/scheduler/ischeduler.cpp

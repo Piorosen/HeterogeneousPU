@@ -2,9 +2,9 @@
 
 #include <scheduler/ischeduler.h>
 
-class round_robine : public ischeduler { 
+class priority_scheduler : public ischeduler { 
 public:
-    virtual std::string get_name() const { return "round_robin"; }
+    virtual std::string get_name() const { return "priority_scheduler"; }
     virtual void deinit() override;
     virtual void sequence(std::vector<std::string> model_idx) override;
 };

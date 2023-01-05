@@ -48,4 +48,6 @@ public:
     int get_compute() const { 
         return total_inference;
     }
+    virtual void inference_result() const {printf("hinghing\n");}
+
 };

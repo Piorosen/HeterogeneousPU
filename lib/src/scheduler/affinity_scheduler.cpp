@@ -1,23 +1,28 @@
-#include <scheduler/min_assign_scheduler.h>
+#include <scheduler/affinity_scheduler.h>
 #include <chrono>
 
-void min_assign_scheduler::deinit() { 
+void affinity_scheduler::deinit() { 
 
 }
-void min_assign_scheduler::sequence(std::vector<std::string> model_idx) { 
-      auto l = compose::manager::instance()->engine_list();
+void affinity_scheduler::sequence(std::vector<std::string> model_idx) { 
+    auto l = compose::manager::instance()->engine_list();
     auto start = high_resolution_clock::now();
     auto cc = high_resolution_clock::now();
 
-    for (int i = 0, j = 0; ; i++, j++) {
+    for (int i = 0; ; i++) {
         // 버퍼크기 16미만일떄까지 루프 돌아야지
-        auto m = model_idx[i % model_idx.size()];
-        if (model_idx[i % model_idx.size()] == "resnet101") {
-            this->data[compose::engine::rknn]->enqueue(m);
-        }else if (model_idx[i % model_idx.size()] == "resnet50") {
-            this->data[compose::engine::myriad]->enqueue(m);
-        }else {
-            this->data[compose::engine::coral]->enqueue(m);
+        switch (i % 3) { 
+        case 0:
+            this->data[compose::engine::coral]->enqueue("mobilenet");
+            break;
+        case 1:
+            this->data[compose::engine::myriad]->enqueue("resnet50");
+            break;
+        case 2:
+            this->data[compose::engine::rknn]->enqueue("resnet101");
+            break;
+        default:
+            throw "?!?!?!?!";
         }
 
         // printf("%d\n",  (high_resolution_clock::now() - cc).count());
@@ -32,9 +37,17 @@ void min_assign_scheduler::sequence(std::vector<std::string> model_idx) {
             i = 0;
         }
 
-        if (j >= 3000) { 
+        int s = 0;
+        for (const auto& engine : this->data) { 
+            s += engine.second->get_compute();
+        }
+        if (s >= 3000) { 
             break;
         }
     }
     printf("finish : %.3f\n\n", (double)(high_resolution_clock::now() - start).count() / 1000 / 1000 / 1000);
+    
+    for (const auto& engine : this->data) { 
+        engine.second->inference_result();
+    }
 }
