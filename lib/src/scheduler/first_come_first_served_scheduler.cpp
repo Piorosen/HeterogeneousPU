@@ -13,7 +13,7 @@ void first_come_first_served_scheduler::sequence(std::vector<std::string> model_
     auto cc = high_resolution_clock::now();
 
     for (int i = 0, j = 0; ; i++, j++) {
-        if (j < 3000) { 
+        if (j < this->inference_count) { 
             // 버퍼크기 16미만일떄까지 루프 돌아야지
             std::shared_ptr<buf_pu_queue> sel = nullptr;
             auto m = model_idx[i % model_idx.size()];
@@ -34,7 +34,7 @@ void first_come_first_served_scheduler::sequence(std::vector<std::string> model_
         }
 
         // printf("%d\n",  (high_resolution_clock::now() - cc).count());
-        if ((high_resolution_clock::now() - cc).count() / 1000 / 1000 > 3000) { 
+        if ((high_resolution_clock::now() - cc).count() / 1000 / 1000 > this->text_out) { 
             for (const auto& engine : this->data) { 
                 printf("%s : %.3f \tfps\n", compose::engine_to_string(engine.first).c_str(), engine.second->get_fps());
             }
@@ -49,7 +49,7 @@ void first_come_first_served_scheduler::sequence(std::vector<std::string> model_
         for (const auto& engine : this->data) { 
             s += engine.second->get_compute();
         }
-        if (s >= 3000) { 
+        if (s >= this->inference_count) { 
             break;
         }
     }

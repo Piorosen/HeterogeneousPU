@@ -43,7 +43,7 @@ void priority_scheduler::sequence(std::vector<std::string> model_idx) {
 
     for (int i = 0, j = 0; true; i++, j++) {
         // 버퍼크기 16미만일떄까지 루프 돌아야지
-        if (j < 3000) { 
+        if (j < this->inference_count) { 
             // 버퍼크기 16미만일떄까지 루프 돌아야지
             std::shared_ptr<buf_pu_queue> sel = nullptr;
             while (true) { 
@@ -76,7 +76,7 @@ void priority_scheduler::sequence(std::vector<std::string> model_idx) {
         
         
         // printf("%d\n",  (high_resolution_clock::now() - cc).count());
-        if ((high_resolution_clock::now() - cc).count() / 1000 / 1000 > 3000) { 
+        if ((high_resolution_clock::now() - cc).count() / 1000 / 1000 > this->text_out) { 
             for (const auto& engine : this->data) { 
                 printf("%s : %.3f \tfps\n", compose::engine_to_string(engine.first).c_str(), engine.second->get_fps());
             }
@@ -97,7 +97,7 @@ void priority_scheduler::sequence(std::vector<std::string> model_idx) {
         // }
         
         // printf("%04d ::: %04d\n", s, sss);
-        if (s >= 3000) { 
+        if (s >= this->inference_count) { 
             break;
         }
      }
