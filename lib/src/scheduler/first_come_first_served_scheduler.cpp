@@ -13,7 +13,7 @@ void first_come_first_served_scheduler::sequence(std::vector<std::string> model_
     auto cc = high_resolution_clock::now();
 
     for (int i = 0, j = 0; ; i++, j++) {
-        if (j > 3000) { 
+        if (j < 3000) { 
             // 버퍼크기 16미만일떄까지 루프 돌아야지
             std::shared_ptr<buf_pu_queue> sel = nullptr;
             auto m = model_idx[i % model_idx.size()];

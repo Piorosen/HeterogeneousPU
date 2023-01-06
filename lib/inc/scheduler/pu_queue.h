@@ -44,8 +44,6 @@ public:
         pu_to_idx["mobilenet"] = 0;
         pu_to_idx["resnet50"] = 0;
         pu_to_idx["resnet101"] = 0;
-        
-
     }
 
     std::string get_name() const { return name; }

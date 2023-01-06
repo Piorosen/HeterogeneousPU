@@ -18,11 +18,11 @@ void priority_scheduler::deinit() {
 map<string, int> pu_to_idx;
 
 array<array<int, 3>, 4> priority_table {{
-    { 0,1,2},
+    { 0,2,1},
     // { 1,2,0},
-    {1,2,0},
+    {2,-1,-1},
     {0,2,1},
-    {2,1,0}
+    {1,0,2}
 }};
 
 array<string, 3> model {{
@@ -43,7 +43,7 @@ void priority_scheduler::sequence(std::vector<std::string> model_idx) {
 
     for (int i = 0, j = 0; true; i++, j++) {
         // 버퍼크기 16미만일떄까지 루프 돌아야지
-        if (j > 3000) { 
+        if (j < 3000) { 
             // 버퍼크기 16미만일떄까지 루프 돌아야지
             std::shared_ptr<buf_pu_queue> sel = nullptr;
             while (true) { 
@@ -56,13 +56,21 @@ void priority_scheduler::sequence(std::vector<std::string> model_idx) {
                     break;
                 }
             }
-
+            bool run = false;
             for (int a = 0; a < 3; a++) { 
                 if (count[priority_table[pu_to_idx[sel->get_name()]][a]] >= 1000) {
                     continue;
                 }
+                if (priority_table[pu_to_idx[sel->get_name()]][a] == -1) { 
+                    continue;
+                }
+                run = true;
                 count[priority_table[pu_to_idx[sel->get_name()]][a]] += 1;
                 sel->enqueue(model[priority_table[pu_to_idx[sel->get_name()]][a]]);
+                break;
+            }
+            if (!run) { 
+                j -= 1;
             }
         }
         
@@ -83,6 +91,12 @@ void priority_scheduler::sequence(std::vector<std::string> model_idx) {
         for (const auto& engine : this->data) { 
             s += engine.second->get_compute();
         }
+        // int sss = 0;
+        // for (int a = 0; a < 3; a++) { 
+        //     sss += count[a];
+        // }
+        
+        // printf("%04d ::: %04d\n", s, sss);
         if (s >= 3000) { 
             break;
         }
