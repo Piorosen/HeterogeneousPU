@@ -14,13 +14,13 @@ void affinity_scheduler::sequence(std::vector<std::string> model_idx) {
             // 버퍼크기 16미만일떄까지 루프 돌아야지
             switch (i % 3) { 
             case 0:
-                this->data[compose::engine::coral]->enqueue("mobilenet");
+                this->data[compose::engine::coral]->enqueue(model_idx[0]);
                 break;
             case 1:
-                this->data[compose::engine::myriad]->enqueue("resnet50");
+                this->data[compose::engine::myriad]->enqueue(model_idx[2]);
                 break;
             case 2:
-                this->data[compose::engine::rknn]->enqueue("resnet101");
+                this->data[compose::engine::rknn]->enqueue(model_idx[1]);
                 break;
             default:
                 throw "?!?!?!?!";

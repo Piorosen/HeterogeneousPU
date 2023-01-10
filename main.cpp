@@ -37,11 +37,7 @@ int main(int argc, char **argv)
     }
     sche->set_option(atoi(argv[2]), atoi(argv[3]));
 
-    sche->init(models, 0);
-
-    ofstream file;
-    file.open("./log.txt", ios_base::out | ios_base::app); // 파일 경로(c:\\log.txt)
-    cout.rdbuf(file.rdbuf()); // 표준 출력 방향을 파일로 전환
+    sche->init({ models[atoi(argv[4])], models[atoi(argv[5])], models[atoi(argv[6])] }, 0);
 
     sche->sequence(models);
 
