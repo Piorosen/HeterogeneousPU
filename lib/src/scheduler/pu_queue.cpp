@@ -37,6 +37,7 @@ void buf_pu_queue::run_loop(std::vector<std::string> model, compose::engine e, s
             mi.width = 224;
             mi.layout = compose::data_layout::nhwc;
             models[model_name]->init("./model/" + model_name, mi);
+            printf("%s ----\n", model_name.c_str());
             if (e == compose::engine::myriad) {
                 break;
             } 

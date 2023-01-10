@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
     sche->init({ models[atoi(argv[4])], models[atoi(argv[5])], models[atoi(argv[6])] }, 0);
 
-    sche->sequence(models);
+    sche->sequence({ models[atoi(argv[4])], models[atoi(argv[5])], models[atoi(argv[6])] });
 
     return 0;
 }
